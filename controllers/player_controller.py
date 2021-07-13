@@ -1,10 +1,11 @@
 # This is the player controller
 
-
 class PlayerController:
 
     def __init__(self, model, view):
-        pass
+        self.model = model
+        self.view = view
+        self.players = []
 
     def create_player():
         # from Player view
@@ -13,4 +14,8 @@ class PlayerController:
         # create a player object from the model
         # PlayerView.message(
         # "player {last_name} {first_name} has been created")
+        pass
+
+    def show_players(view):
+        # do something
         pass

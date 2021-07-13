@@ -9,3 +9,6 @@ class Player:
         self.birth_date = birth_date
         self.sex = sex
         self.ranking = ranking
+
+    def get_all():
+        print("get all")
