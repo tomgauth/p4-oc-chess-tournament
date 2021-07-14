@@ -3,6 +3,7 @@ from controllers.player_controller import PlayerController
 from views.player_view import MasterView, PlayerView
 
 
+
 def main():
     pc = PlayerController(Player, PlayerView)
 
