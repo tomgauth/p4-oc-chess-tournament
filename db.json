@@ -1,1 +1,92 @@
-{"tournaments": {"1": {"name": "a tournament", "location": "Paris", "date_start": "today", "date_end": "tomorrow", "num_of_rounds": "4", "rounds": "", "players": "", "time_control": "rapid", "description": "a test tournament"}, "2": {"name": "a tournament", "location": "Paris", "date_start": "today", "date_end": "tomorrow", "num_of_rounds": "4", "rounds": "", "players": "", "time_control": "rapid", "description": "a test tournament"}, "3": {"name": "'Tournament Caen'", "location": "Caen", "date_start": "today", "date_end": "Saturday", "num_of_rounds": "", "rounds": "", "players": "", "time_control": "rapid", "description": "a nice test"}}}
+{
+  "tournaments": {
+    "1": {
+      "name": "a tournament",
+      "location": "Paris",
+      "date_start": "today",
+      "date_end": "tomorrow",
+      "num_of_rounds": "4",
+      "rounds": "",
+      "players": "",
+      "time_control": "rapid",
+      "description": "a test tournament"
+    },
+    "2": {
+      "name": "a tournament",
+      "location": "Paris",
+      "date_start": "today",
+      "date_end": "tomorrow",
+      "num_of_rounds": "4",
+      "rounds": "",
+      "players": "",
+      "time_control": "rapid",
+      "description": "a test tournament"
+    },
+    "3": {
+      "name": "'Tournament Caen'",
+      "location": "Caen",
+      "date_start": "today",
+      "date_end": "Saturday",
+      "num_of_rounds": "",
+      "rounds": "",
+      "players": "",
+      "time_control": "rapid",
+      "description": "a nice test"
+    },
+    "5": {
+      "name": "Chess tournament France 2021",
+      "num_of_rounds": 4,
+      "players": [],
+      "rounds": [],
+      "time_control": "bullet"
+    }
+  },
+  "players": {
+    "3": {
+      "first_name": "JEAN PAUL",
+      "id_key": "11b9af1a-ef5c-49fd-b96e-c1e4da48e040",
+      "sex": "O"
+    },
+    "4": {
+      "first_name": "Bobby",
+      "id_key": "c27e98f3-86cd-4d35-b901-16a7e125e06c",
+      "last_name": "Fisher",
+      "ranking": 45,
+      "sex": "M"
+    },
+    "5": {
+      "first_name": "Yuri",
+      "id_key": "ab7e5cfe-c588-450c-8ecf-f5584aaf48db",
+      "sex": "N/A"
+    },
+    "6": {
+      "first_name": "Yuri",
+      "id_key": "1c124e7b-55c3-4cae-8dce-212727413308",
+      "sex": "N/A"
+    },
+    "7": {
+      "first_name": "Josh",
+      "id_key": "fcb94f5a-6e10-405d-b49e-d01fbe91ee97",
+      "sex": "N/A"
+    },
+    "8": {
+      "first_name": "Pat",
+      "id_key": "cd722918-9b58-4ae9-8a6c-d7b08a125204",
+      "sex": "N/A"
+    },
+    "9": {
+      "first_name": "Steve",
+      "id_key": "126e8bce-2954-407a-bd01-68e0730aa282",
+      "last_name": "Jaws",
+      "ranking": 22,
+      "sex": "M"
+    },
+    "10": {
+      "first_name": "Tom",
+      "id_key": "c5c07fae-35c7-45d0-a2ac-4133790c4a04",
+      "last_name": "Hanks",
+      "sex": "M",
+      "ranking": 67
+    }
+  }
+}
