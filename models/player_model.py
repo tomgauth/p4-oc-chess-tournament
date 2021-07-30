@@ -35,8 +35,12 @@ class PlayerHandler:
             self.p_table.update(player.to_struct(),
                                 Query().id_key == player.id_key)
         except ValidationError:
+            print('PLAYERHANDLER ValidationError')
             player.id_key = str(uuid.uuid4())
+            print('PLAYERHANDLER - ASSIGNED ID',player.id_key)
             self.p_table.insert(player.to_struct())
+        print('PLAYERHANDLER ', player.id_key)
+        return player
 
     def destroy(self, player_id):
         self.p_table.remove(where('id_key') == player_id)

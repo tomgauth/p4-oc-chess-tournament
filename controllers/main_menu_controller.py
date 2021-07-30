@@ -2,22 +2,31 @@
 
 
 class MainMenuController:
-    def __init__(self, view, tournament_controller):
-        self.view = view
-        self.tc = tournament_controller
+    def __init__(self, main_menu_view, tournament_controller, player_controller):
+        self.mm_view = main_menu_view
+        self.t_controller = tournament_controller
+        self.p_controller = player_controller
 
-    def start(self):
-        self.view.show_main_menu()
-
-    def select_option(self):
-        selection = self.view.get_input('''Select an option:
-                                        1 - Create new tournament
-                                        2 - Manage tournaments''')
-
-        self.redirect(selection)
-
-    def redirect(self, selection):
+    def select(self, selection):
         if selection == '1':
-            self.tc.create_tournament()
-            # create new tournament
-            # call tournament_controller
+            return self.t_controller.select_action()
+        elif selection == '2':
+            return self.p_controller
+        elif selection == '3':
+            return False
+        else:
+            print("Invalid Input")
+
+    def run(self):
+        running = True
+        while running:
+            self.mm_view.display_actions()
+            running = self.select(self.mm_view.get_input())
+            print("Running: ", running)
+
+
+        # display the main menu with the diffferent options
+        # redirect to the corresponding view/menu depending on user input
+        # create actions depending on input (pairs players in matches
+        # during each round)
+

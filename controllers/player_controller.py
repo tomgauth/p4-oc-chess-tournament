@@ -1,10 +1,9 @@
 # This is the player controller
 class PlayerController:
 
-    def __init__(self, model, view):
-        self.model = model
+    def __init__(self, player_handler, view):
+        self.player_handler = player_handler
         self.view = view
-        self.players = []
 
     def create_player():
         # from Player view

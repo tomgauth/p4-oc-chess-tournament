@@ -1,27 +1,7 @@
 # This is the player model
 
 
-class MasterView:
-
-    def __init__(self):
-        pass
-
-    def get_input(prompt):
-        user_input = input(prompt + " : ")
-        return user_input
-
-    def get_multiple_inputs(self, details):
-        user_inputs = []
-        for detail in details:
-            prompt = detail
-            user_input = self.get_input(prompt)
-            user_inputs.append(user_input)
-
-        return user_inputs
-        pass
-
-
-class PlayerView(MasterView):
+class PlayerView:
 
     def __init__(self):
         pass

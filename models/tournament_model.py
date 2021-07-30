@@ -13,8 +13,8 @@ class Tournament(models.Base):
     date_end = fields.DateField(str_format='%d-%m-%Y',
                                 required=False, default=None)
     num_of_rounds = fields.IntField(required=False, default=4)
-    rounds = fields.ListField(required=False, default=[])
-    players = fields.ListField(required=False, default=[])
+    rounds = fields.ListField(default=[])
+    players = fields.ListField(default=[])
     time_control = fields.StringField(default=None,
                                       validators=validators.Enum(None,
                                                                  'bullet',
@@ -27,42 +27,56 @@ class Tournament(models.Base):
 
 
 class TournamentHandler:
-    def __init__(self, tournaments_table):
+    def __init__(self, tournaments_table, tournament):
         self.t_table = tournaments_table
+        self.model = tournament
 
     def to_obj(self, tournament_doc):
-        return Tournament(
+        tournament = Tournament(
             name=tournament_doc.get('name'),
             location=tournament_doc.get('location', None),
             date_start=tournament_doc.get('date_start', None),
             date_end=tournament_doc.get('date_end', None),
             num_of_rounds=tournament_doc.get('num_of_rounds', None),
-            rounds=tournament_doc.get('rounds', []),
-            players=tournament_doc.get('players', []),
-            time_control=tournament_doc.get('time_control', None))
+            time_control=tournament_doc.get('time_control', None),
+            id_key=tournament_doc.get('id_key'))
+
+        players_list = tournament_doc.get('players', [])
+        tournament.players = tournament.players.extend(players_list)
+        rounds_list = tournament_doc.get('rounds', [])
+        tournament.rounds = tournament.rounds.extend(rounds_list)
+
+        return tournament
 
     def save_to_db(self, tournament):
         # check if there is already a tournament with this id
         try:
-            # self.p_table.contains(Query().id_key == tournament.id_key)
-            self.p_table.update(tournament.to_struct(),
+            # self.t_table.contains(Query().id_key == tournament.id_key)
+            self.t_table.update(tournament.to_struct(),
                                 Query().id_key == tournament.id_key)
         except ValidationError:
             tournament.id_key = str(uuid.uuid4())
-            self.p_table.insert(tournament.to_struct())
+            self.t_table.insert(tournament.to_struct())
+        return tournament
 
     def destroy(self, tournament_id):
-        self.p_table.remove(where('id_key') == tournament_id)
+        self.t_table.remove(where('id_key') == tournament_id)
 
     def all_tournaments(self):
-        return self.p_table.all()
+        return self.t_table.all()
 
     def search(self, **kwargs):
-        result = self.p_table.search(Query().fragment(kwargs))
+        result = self.t_table.search(Query().fragment(kwargs))
         if len(result) == 1:
-            result = result[0]
-        return self.to_obj(result)
+            output = self.to_obj(result[0])
+        else:  # return a list of objects
+            output = []
+            for r in result:
+                output.append(self.to_obj(r))
+        print(output)
+        print(type(output))
+        return output
 
     def upsert(self, tournament):
-        self.p_table.upsert(tournament.to_struct(),
+        self.t_table.upsert(tournament.to_struct(),
                             Query().id_key == tournament.id_key)

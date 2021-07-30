@@ -1,36 +1,31 @@
-class MasterView:
+# A View should never call its own methods. Only a Controller should do it.
+class TournamentView():
 
-    def __init__(self):
-        pass
-
-    def get_input(self, prompt):
-        user_input = input(prompt + " : ")
+    def get_input(self, prompt=None):
+        if prompt:
+            print(prompt)
+        user_input = input("=> ")
         return user_input
 
-    def get_multiple_inputs(self, details):
-        user_inputs = []
-        for detail in details:
-            prompt = detail
-            user_input = self.get_input(prompt)
-            user_inputs.append(user_input)
+    def print_tournaments(self, tournaments):
+        for i, tr in enumerate(tournaments):
+            print('{}. {}'.format(i, tr['name']))
 
-        return user_inputs
-        pass
+    def show_tournament_details(self, tournament, players=[]):
+        print(f'''TOURNAMENT {tournament.name}
+Location: {tournament.location}
+Time_control: {tournament.time_control}
+PLAYERS: ''')
+        for i in range(len(players)):
+            player = players[i]
+            print(f'''Name: {player.first_name} - {player.last_name}
+Ranking: {player.ranking}
+      ----        ''')
 
-
-class TournamentView(MasterView):
-
-    def __init__(self):
-        pass
-
-    def show_tournaments(tournaments):
-        for tournament in tournaments:
-            print(tournament)
-        pass
-
-    def show_tournament(tournament):
-        print(tournament)
-
-    def get_input_tournament(details):
-        # NOTE maybe a parent class should handle this?
-        pass
+    def display_actions(self):
+        print('''TOURNAMENTS MENU
+Select an action:
+1. Create a tournament
+2. See tournaments
+3. Edit a tournament
+          ''')
