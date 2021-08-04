@@ -45,18 +45,16 @@ class TournamentController:
     def add_player(self):
         p = Player()
         p.first_name = self.view.get_input('player first name: ')
-        p.last_name = self.view.get_input('player last name: ')
-        p.sex = self.view.get_input('player sex (M/F/O: ')
-        p.ranking = self.view.get_input('player ranking')
+        # p.last_name = self.view.get_input('player last name: ')
+        # p.sex = self.view.get_input('player sex (M/F/O: ')
+        # p.ranking = self.view.get_input('player ranking')
         player = self.p_model_handler.save_to_db(p)
         return player.id_key
         # create a player
 
     def add_players(self):
         added_players = []  # list of player key_ids
-        adding_players = self.view.get_input('''
-            Press "n" to stop adding players
-            Press enter to continue''')
+        adding_players = ''
         while (adding_players != 'n') and (len(added_players) < 8):
             print('adding_players', adding_players) # loop doesn't break here.
             print(adding_players == 'n')
@@ -72,13 +70,13 @@ class TournamentController:
     def create_tournament(self):
         t = self.t_model_handler.model
         t.name = self.view.get_input('name')
-        t.location = self.view.get_input('location')
+        # t.location = self.view.get_input('location')
         # t.date_start = self.view.get_input('date_start')
         # t.date_end = self.view.get_input('date_end')
-        t.num_of_rounds = self.view.get_input('num_of_rounds')
+        # t.num_of_rounds = self.view.get_input('num_of_rounds')
         # t.rounds = self.view.get_input('rounds')
         # t.players = self.view.get_input('players')
-        t.time_control = self.view.get_input('time_control')
+        # t.time_control = self.view.get_input('time_control')
         t.players = t.players.extend(self.add_players())
         th = self.t_model_handler
         saved_tournament = th.save_to_db(t)
