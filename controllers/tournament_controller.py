@@ -57,13 +57,15 @@ class TournamentController:
         adding_players = self.view.get_input('''
             Press "n" to stop adding players
             Press enter to continue''')
-        while adding_players != 'n' or len(added_players) <= 8:
+        while (adding_players != 'n') and (len(added_players) < 8):
+            print('adding_players', adding_players) # loop doesn't break here.
+            print(adding_players == 'n')
+            added_player_id = self.add_player()
+            added_players.append(added_player_id)
             adding_players = self.view.get_input(f'''
             {len(added_players)}/8 players added
             Press "n" to stop adding players
             Press enter to continue''')
-            added_player_id = self.add_player()
-            added_players.append(added_player_id)
 
         return added_players
 
