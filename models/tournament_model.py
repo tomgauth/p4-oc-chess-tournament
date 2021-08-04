@@ -39,7 +39,9 @@ class TournamentHandler:
             date_end=tournament_doc.get('date_end', None),
             num_of_rounds=tournament_doc.get('num_of_rounds', None),
             time_control=tournament_doc.get('time_control', None),
-            id_key=tournament_doc.get('id_key'))
+            id_key=tournament_doc.get('id_key'),
+            players=[],
+            rounds=[])
 
         players_list = tournament_doc.get('players', [])
         tournament.players = tournament.players.extend(players_list)

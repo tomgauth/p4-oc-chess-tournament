@@ -1,10 +1,12 @@
 # This is the tournament controller
 from models.player_model import Player
+from models.round_model import Round
 
 
 class TournamentController:
 
-    def __init__(self, tournament_model_handler, player_model_handler, view):
+    def __init__(self, tournament_model_handler,
+                 player_model_handler, view):
         self.t_model_handler = tournament_model_handler
         self.p_model_handler = player_model_handler
         self.view = view
@@ -84,6 +86,19 @@ class TournamentController:
         return True
         # from self.model get the attr
         # create a tournament from Model
+
+    def start_tournament(self):
+        # this controller will create and manage a tournament
+        # create a round
+
+        # t_model_handler.create_round()
+        # create matches for the round
+        # allow the user to update the results of the matches
+        #   - find a player
+        #   - update the match where the player participated with the result of the match
+        # Generate new matches for the players
+        # Update again the results
+        pass
 
     def select(self, selection):
         if selection == '1':
