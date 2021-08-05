@@ -8,8 +8,9 @@ class TournamentView():
         return user_input
 
     def print_tournaments(self, tournaments):
-        for i, tr in enumerate(tournaments):
-            print('{}. {}'.format(i, tr['name']))
+        for i in range(len(tournaments)):
+            tournament = tournaments[i]
+            print(f"{i} - {tournament.name}")
 
     def show_tournament_details(self, tournament, players=[]):
         print(f'''TOURNAMENT {tournament.name}
@@ -28,4 +29,5 @@ Select an action:
 1. Create a tournament
 2. See tournaments
 3. Edit a tournament
+4. Start a tournament
           ''')

@@ -15,9 +15,10 @@ class TournamentController:
     def select_tournament(self):
         tournaments = self.t_model_handler.all_tournaments()
         self.show_tournaments()
-        selection = self.view.get_input()
+        selection = int(self.view.get_input())
         self.selected_tournament = tournaments[selection]
         self.view.show_tournament_details(self.selected_tournament)
+        return self.selected_tournament
 
     def show_tournaments(self):
         # do something
@@ -89,9 +90,10 @@ class TournamentController:
 
     def start_tournament(self):
         # this controller will create and manage a tournament
+        selected_tournament = self.select_tournament()
         # create a round
 
-        # t_model_handler.create_round()
+        # r = Round()
         # create matches for the round
         # allow the user to update the results of the matches
         #   - find a player
@@ -107,6 +109,8 @@ class TournamentController:
             return self.show_tournaments()
         elif selection == '3':
             print('edit a tournament')
+        elif selection == '4':
+            return self.start_tournament()
         else:
             print("Invalid Input")
 

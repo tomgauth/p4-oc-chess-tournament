@@ -13,8 +13,8 @@ class Tournament(models.Base):
     date_end = fields.DateField(str_format='%d-%m-%Y',
                                 required=False, default=None)
     num_of_rounds = fields.IntField(required=False, default=4)
-    rounds = fields.ListField(default=[])
-    players = fields.ListField(default=[])
+    rounds = fields.ListField(default=[], nullable=True)
+    players = fields.ListField(default=[], nullable=True)
     time_control = fields.StringField(default=None,
                                       validators=validators.Enum(None,
                                                                  'bullet',
@@ -27,9 +27,8 @@ class Tournament(models.Base):
 
 
 class TournamentHandler:
-    def __init__(self, tournaments_table, tournament):
+    def __init__(self, tournaments_table):
         self.t_table = tournaments_table
-        self.model = tournament
 
     def to_obj(self, tournament_doc):
         tournament = Tournament(
@@ -65,7 +64,12 @@ class TournamentHandler:
         self.t_table.remove(where('id_key') == tournament_id)
 
     def all_tournaments(self):
-        return self.t_table.all()
+        tournaments_as_obj = []
+        all_tournaments = self.t_table.all()
+        for tournament in all_tournaments:
+            obj = self.to_obj(tournament)
+            tournaments_as_obj.append(obj)
+        return tournaments_as_obj
 
     def search(self, **kwargs):
         result = self.t_table.search(Query().fragment(kwargs))
