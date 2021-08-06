@@ -8,20 +8,21 @@ class TournamentView():
         return user_input
 
     def print_tournaments(self, tournaments):
-        for i in range(len(tournaments)):
-            tournament = tournaments[i]
-            print(f"{i} - {tournament.name}")
+        for tr in tournaments:
+            print("{} - {}".format(tr.doc_id, tr['name']))
 
-    def show_tournament_details(self, tournament, players=[]):
-        print(f'''TOURNAMENT {tournament.name}
-Location: {tournament.location}
-Time_control: {tournament.time_control}
-PLAYERS: ''')
-        for i in range(len(players)):
-            player = players[i]
-            print(f'''Name: {player.first_name} - {player.last_name}
-Ranking: {player.ranking}
-      ----        ''')
+    def show_tournament_details(self, tournament):
+        print("""TOURNAMENT {}
+Location: {}
+Time_control: {}""".format(
+            tournament['name'],
+            tournament['location'], tournament['players']))
+        if len(tournament['players']) > 0:
+            for player in tournament['players']:
+                print("""Name: {} - {}
+Ranking: {}
+      ----        """.format(player['first_name'], player['last_name'],
+                             player['ranking']))
 
     def display_actions(self):
         print('''TOURNAMENTS MENU

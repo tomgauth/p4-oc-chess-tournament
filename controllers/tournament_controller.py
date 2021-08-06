@@ -5,15 +5,13 @@ from models.round_model import Round
 
 class TournamentController:
 
-    def __init__(self, tournament_model_handler,
-                 player_model_handler, view):
-        self.t_model_handler = tournament_model_handler
-        self.p_model_handler = player_model_handler
+    def __init__(self, tournament_model, view):
+        self.t_model = tournament_model
         self.view = view
         self.selected_tournament = None
 
     def select_tournament(self):
-        tournaments = self.t_model_handler.all_tournaments()
+        tournaments = self.t_model.all_tournaments()
         self.show_tournaments()
         selection = int(self.view.get_input())
         self.selected_tournament = tournaments[selection]
@@ -22,22 +20,20 @@ class TournamentController:
 
     def show_tournaments(self):
         # do something
-        list_tournaments = self.t_model_handler.all_tournaments()
+        list_tournaments = self.t_model.read_tournaments()
         self.view.print_tournaments(list_tournaments)
         return True
 
     def delete_tournament():
         # prompts tournament name
         # pass to model to destroy the tournament
-        # prints("tournament {name} has been deleted")
+        # view shows ("tournament {name} has been deleted")
         pass
 
     def show_tournament(self, tournament):
-        players = []
-        for player_id in tournament.players:
-            player_obj = self.p_model_handler.search(id_key=player_id)
-            players.append(player_obj)
-        self.view.show_tournament_details(tournament, players)
+        self.view.show_tournament_details(tournament)
+
+    """
 
     def find_tournament(self, name):
         print(self.tournaments)
@@ -69,9 +65,14 @@ class TournamentController:
             Press enter to continue''')
 
         return added_players
-
+    """
     def create_tournament(self):
-        t = self.t_model_handler.model
+        """ create a new Tournament() object
+            for each value, gets input from the view
+            add the value to the tournament
+            ask model to create_tournament() to save
+        """
+        t = self.t_model
         t.name = self.view.get_input('name')
         # t.location = self.view.get_input('location')
         # t.date_start = self.view.get_input('date_start')
@@ -80,10 +81,11 @@ class TournamentController:
         # t.rounds = self.view.get_input('rounds')
         # t.players = self.view.get_input('players')
         # t.time_control = self.view.get_input('time_control')
-        t.players = t.players.extend(self.add_players())
-        th = self.t_model_handler
-        saved_tournament = th.save_to_db(t)
-        self.show_tournament(saved_tournament)
+        # t.players = t.players.extend(self.add_players())
+        tournament_id = t.create_tournament()
+        created_tournament = self.t_model.read_tournament(tournament_id)
+        print("SAVED TOURNMANET", created_tournament)
+        self.show_tournament(created_tournament)
         return True
         # from self.model get the attr
         # create a tournament from Model
