@@ -11,14 +11,14 @@ class TournamentView():
         for tr in tournaments:
             print("{} - {}".format(tr.doc_id, tr['name']))
 
-    def show_tournament_details(self, tournament):
+    def show_tournament_details(self, tournament, players):
         print("""TOURNAMENT {}
 Location: {}
 Time_control: {}""".format(
             tournament['name'],
-            tournament['location'], tournament['players']))
+            tournament['location'], tournament['time_control']))
         if len(tournament['players']) > 0:
-            for player in tournament['players']:
+            for player in players:
                 print("""Name: {} - {}
 Ranking: {}
       ----        """.format(player['first_name'], player['last_name'],
