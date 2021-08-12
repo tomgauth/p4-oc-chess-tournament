@@ -22,9 +22,16 @@ class Player:
              "ranking": self.ranking
              })
 
-    def get_from_id(self, id_num):
+    def get_player_from_id(self, id_num):
         player_data = self.p_table.get(doc_id=id_num)
-        return player_data
+        player = Player(
+            last_name=player_data["last_name"],
+            first_name=player_data["first_name"],
+            birth_date=player_data["birth_date"],
+            sex=player_data["sex"],
+            ranking=player_data["ranking"]
+        )
+        return player
 
     def read_player(self, id_num):
         """ find a player by id """
@@ -38,5 +45,5 @@ class Player:
     def update_player(self, id_num, obj):
         return self.p_table.update(obj, doc_ids=[id_num])
 
-    def delete_touranment(self, id_num):
+    def delete_player(self, id_num):
         return self.p_table.remove(doc_ids=[id_num])

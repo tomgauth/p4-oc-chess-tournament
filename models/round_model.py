@@ -1,66 +1,43 @@
-from tinydb import Query, where
-from jsonmodels import models, fields, validators
-from jsonmodels.errors import ValidationError
-import uuid
+# This is the round model
+from models.match_model import Match
+from tinydb import TinyDB
+db = TinyDB('db.json')
 
 
-class Round(models.Base):
-    matches = fields.ListField(default=[])
-    id_key = fields.StringField(required=True,
-                                validators=validators.Length(
-                                    minimum_value=36, maximum_value=36))
-    round_num = fields.IntField(default=1)
+class Round:
+    def __init__(self, matches=[]):
+        self.r_table = db.table('rounds')
+        self.matches = []
 
+    def create_round(self):
+        return self.r_table.insert({"matches": self.matches})
 
-class RoundHandler():
-    def __init__(self, rounds_table):
-        self.r_table = rounds_table
+    def get_round_from_id(self, id_num):
+        round_data = self.r_table.get(doc_id=id_num)
+        print(round_data)
+        round_ = Round()
+        print(round_)
+        for match_id in round_data["matches"]:
+            print(match_id)
+            match = Match().get_match_from_id(match_id)
+        round_.matches.add_match(match)
 
-    def to_obj(self, round_doc):
-        play_round = Round(
-            matches=[],
-            id_key=round_doc.get('id_key'),
-            round_num=round_doc.get('round_num', 1))
+        return round_
 
-        matches_list = round_doc.get('matches', [])
-        # TODO refacto? looks fishy
-        play_round.matches = play_round.matches.append(matches_list)
-        return play_round
+    def add_match(self, match):
+        self.matches.append(match.tuple())
 
-    def save_to_db(self, play_round):
-        # check if there is already a play_round with this id
-        try:
-            # self.r_table.contains(Query().id_key == play_round.id_key)
-            self.r_table.update(play_round.to_struct(),
-                                Query().id_key == play_round.id_key)
-        except ValidationError:
-            play_round.id_key = str(uuid.uuid4())
-            self.r_table.insert(play_round.to_struct())
-        return play_round
+    def read_round(self, id_num):
+        """ find a round by id """
+        """ check how to get object by id in tinydb """
+        return self.r_table.get(doc_id=id_num)
 
-    def destroy(self, play_round_id):
-        self.r_table.remove(where('id_key') == play_round_id)
+    def read_rounds(self):
+        """ returns all rounds """
+        return self.r_table.all()
 
-    def all_play_rounds(self):
-        play_rounds_as_obj = []
-        all_play_rounds = self.r_table.all()
-        for play_round in all_play_rounds:
-            obj = self.to_obj(play_round)
-            play_rounds_as_obj.append(obj)
-        return play_rounds_as_obj
+    def update_round(self, id_num, obj):
+        return self.r_table.update(obj, doc_ids=[id_num])
 
-    def search(self, **kwargs):
-        result = self.r_table.search(Query().fragment(kwargs))
-        if len(result) == 1:
-            output = self.to_obj(result[0])
-        else:  # return a list of objects
-            output = []
-            for r in result:
-                output.append(self.to_obj(r))
-        print(output)
-        print(type(output))
-        return output
-
-    def upsert(self, play_round):
-        self.r_table.upsert(play_round.to_struct(),
-                            Query().id_key == play_round.id_key)
+    def delete_round(self, id_num):
+        return self.r_table.remove(doc_ids=[id_num])
