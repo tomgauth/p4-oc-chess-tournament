@@ -1,7 +1,6 @@
 # This is the match model
 from tinydb import TinyDB
 db = TinyDB('db.json')
-m_table = db.table('matches')
 
 
 class Match:
@@ -21,11 +20,11 @@ class Match:
             'p1_score': self.p1_score,
             'p2_id': self.p2_id,
             'p2_score': self.p2_score
-        })
+            })
 
-    @staticmethod
-    def get_match_from_id(id_num):
-        match_data = m_table.get(doc_id=id_num)
+    # this function is not needed, as matches are not saved in db
+    def get_match_from_id(self, id_num):
+        match_data = self.m_table.get(doc_id=int(id_num))
         print(match_data)
         match = Match(
             p1_id=match_data["p1_id"],
@@ -40,8 +39,8 @@ class Match:
         """ check how to get object by id in tinydb """
         return self.m_table.get(doc_id=id_num)
 
-    def read_matchs(self):
-        """ returns all matchs """
+    def read_matches(self):
+        """ returns all matches """
         return self.m_table.all()
 
     def update_match(self, id_num, obj):
@@ -54,5 +53,5 @@ class Match:
 """
 Un match unique doit être stocké sous la forme d'un tuple contenant deux listes,
 chacune contenant deux éléments : une référence à une instance de joueur et un score.
-Les matchs multiples doivent être stockés sous forme de liste sur l'instance du tour.
+Les matches multiples doivent être stockés sous forme de liste sur l'instance du tour.
 """

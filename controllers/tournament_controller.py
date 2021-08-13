@@ -1,6 +1,7 @@
 # This is the tournament controller
 from models.player_model import Player
 from models.round_model import Round
+from models.match_model import Match
 
 
 class TournamentController:
@@ -87,19 +88,38 @@ class TournamentController:
         # from self.model get the attr
         # create a tournament from Model
 
+    def sort_players_by_ranking(self):
+        players = self.selected_tournament.players
+        sorted_players = sorted(players, key=lambda x: x.ranking, reverse=False)
+        return sorted_players
+
     def start_tournament(self):
         # this controller will create and manage a tournament
         selected_tournament = self.select_tournament()
-        # create a round
+        # move this function to the player controller?
+        players = selected_tournament.sort_players_by_ranking()
+        matches = []
+        for i in range(int(len(players)/2)):
+            print(i, players[i].first_name, players[i+4].first_name)
+            player1_id = players[i].get_player_id()
+            player2_id = players[i+4].get_player_id()
+            print(player1_id, player2_id)
+            match = Match(p1_id=player1_id,p2_id=player2_id)
+            match.create_match()
+            matches.append(match)
 
-        # r = Round()
-        # create matches for the round
-        # allow the user to update the results of the matches
-        #   - find a player
-        #   - update the match where the player participated with the result of the match
-        # Generate new matches for the players
-        # Update again the results
-        pass
+        selected_tournament.rounds[0].matches.append(matches)
+
+        return matches # todo remove later
+
+
+        """
+        allow the user to update the results of the matches
+          - find a player
+          - update the match where the player participated with the result of the match
+        Generate new matches for the players
+        Update again the results
+        """
 
     def select(self, selection):
         if selection == '1':
