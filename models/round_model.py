@@ -36,6 +36,8 @@ class Round:
             "name": name})
 
     def get_round_from_id(self, id_num):
+        # round_ = Round()
+        # round_.r_table.get(doc_id=int(id_num))
         round_data = self.r_table.get(doc_id=int(id_num))
         print(round_data)
         round_ = Round(
