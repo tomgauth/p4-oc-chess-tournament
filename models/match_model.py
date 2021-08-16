@@ -18,12 +18,13 @@ class Match:
         return ([self.p1_id, self.p1_score], [self.p2_id, self.p2_score])
 
     def create_match(self):
-        return self.m_table.insert({
+        match_id = self.m_table.insert({
             'p1_id': self.p1_id,
             'p1_score': self.p1_score,
             'p2_id': self.p2_id,
             'p2_score': self.p2_score
         })
+        return self.m_table.update({'id': match_id}, doc_ids=[match_id])[0]
 
     def save_match(self):
         if self.id == '':
@@ -33,7 +34,8 @@ class Match:
                 {'p1_id': self.p1_id,
                  'p1_score': self.p1_score,
                  'p2_id': self.p2_id,
-                 'p2_score': self.p2_score
+                 'p2_score': self.p2_score,
+                 'id': self.id
                  }, doc_ids=[self.id])[0]
         return result
 

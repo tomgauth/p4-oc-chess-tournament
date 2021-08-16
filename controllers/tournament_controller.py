@@ -11,15 +11,14 @@ class TournamentController:
         self.t_model = tournament_model
         self.p_model = player_model
         self.view = view
-        self.selected_tournament = None
 
     def select_tournament(self):
         self.show_tournaments()
         selection = int(self.view.get_input())
         tournament = Tournament()
-        self.selected_tournament = tournament.get_tournament_from_id(selection)
-        self.show_tournament(self.selected_tournament)
-        return self.selected_tournament
+        selected_tournament = tournament.get_tournament_from_id(selection)
+        self.show_tournament(selected_tournament)
+        return selected_tournament
 
     def show_tournaments(self):
         # do something
@@ -45,12 +44,12 @@ class TournamentController:
 
     def add_player(self):
         self.p_model.first_name = self.view.get_input('player first name: ')
-        self.p_model.last_name = self.view.get_input('player last name: ')
-        self.p_model.sex = self.view.get_input('player sex (M/F/O): ')
-        self.p_model.birth_date = self.view.get_input(
-            'player birth date (DD/MM/YYYY): ')
-        self.p_model.ranking = int(self.view.get_input('player ranking'))
-        player_id = self.p_model.create_player()
+        # self.p_model.last_name = self.view.get_input('player last name: ')
+        # self.p_model.sex = self.view.get_input('player sex (M/F/O): ')
+        # self.p_model.birth_date = self.view.get_input(
+        #     'player birth date (DD/MM/YYYY): ')
+        # self.p_model.ranking = int(self.view.get_input('player ranking'))
+        player_id = self.p_model.save_player()
         return player_id
         # create a player
 
@@ -76,43 +75,42 @@ class TournamentController:
         t.time_control = self.view.get_input('time_control')
         added_players = self.add_players()
         print('create_tournament() added_players : ', added_players)
-        t.players.extend(added_players)
+        t.players = added_players
         print("t_players : ", t.players)
         tournament_id = t.create_tournament()
-        created_tournament = self.t_model.read_tournament(tournament_id)
+        created_tournament = Tournament.get_tournament_from_id(tournament_id)
         print("SAVED TOURNMANET", created_tournament)
         self.show_tournament(created_tournament)
         return True
         # from self.model get the attr
         # create a tournament from Model
 
-    def sort_players_by_ranking(self):
-        players = self.selected_tournament.players
-        sorted_players = sorted(players, key=lambda x: x.ranking, reverse=False)
-        return sorted_players
+    def sort_players_by_ranking(self, players):
+        srtd_players = sorted(players, key=lambda x: x.ranking, reverse=False)
+        return srtd_players
 
     def start_tournament(self):
         # this controller will create and manage a tournament
         tournament = self.select_tournament()
         # move this function to the player controller?
-        players = self.sort_players_by_ranking()
-        matches = tournament.rounds[0].matches
+        players = self.sort_players_by_ranking(tournament.players)
 
         for i in range(int(len(players)/2)):
-            matches[i].p1_id = players[i].get_player_id()
-            matches[i].p2_id = players[i+4].get_player_id()
-            matches[i].save_match()
+            match = tournament.rounds[0].matches[i]
+            match.p1_id = players[i].get_player_id()
+            match.p2_id = players[i+4].get_player_id()
+            match.save_match()
 
         # do not create new matches, populate existing matches
-        tournament.rounds[0].matches.append(matches)
+        # change the line below to get updated matches (from id?)
 
-        return matches # todo remove later
-
+        return tournament  # todo remove later
 
         """
         allow the user to update the results of the matches
           - find a player
-          - update the match where the player participated with the result of the match
+          - update the match where the player participated with the result of
+        the match
         Generate new matches for the players
         Update again the results
         """

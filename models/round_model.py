@@ -7,13 +7,14 @@ db = TinyDB('db.json')
 
 class Round:
     def __init__(
-            self, matches=[], name='', date_time_start='',
+            self, matches=None, name='', date_time_start='',
             date_time_end=''):
         self.r_table = db.table('rounds')
         self.matches = matches
         self.name = name
         self.date_time_start = date_time_start
         self.date_time_end = date_time_end
+        self.id = ''
 
     def date_time_now(self):
         now = datetime.now()
@@ -29,11 +30,27 @@ class Round:
     """TODO: handle save if round already exists """
 
     def create_round(self, round_num):
-        name = "Round{}".format(round_num)
-        matches_ids = self.generate_matches()
-        return self.r_table.insert({
-            "matches": matches_ids,
-            "name": name})
+        self.name = "Round{}".format(round_num)
+        self.matches = self.generate_matches()
+        round_id = self.r_table.insert({
+            "matches": self.matches,
+            "name": self.name,
+            "date_time_start": self.date_time_start,
+            "date_time_end": self.date_time_end})
+        return self.r_table.update({'id': round_id}, doc_ids=[round_id])[0]
+
+    def save_round(self):
+        if self.id == '':
+            result = self.create_round()
+        else:
+            result = self.r_table.update(
+                {"matches": self.matches,
+                 "name": self.name,
+                 "date_time_start": self.date_time_start,
+                 "date_time_end": self.date_time_end,
+                 'id': self.id
+                 }, doc_ids=[self.id])[0]
+        return result
 
     @staticmethod
     def get_round_from_id(id_num):
@@ -44,6 +61,7 @@ class Round:
         round_.date_time_start = round_data['date_time_start']
         round_.date_time_end = round_data['date_time_end']
         print(round_.name)
+        round_.matches = []
         for match_id in round_data["matches"]:
             print(match_id)
             match = Match.get_match_from_id(match_id)

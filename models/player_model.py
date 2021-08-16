@@ -12,26 +12,46 @@ class Player:
         self.birth_date = birth_date
         self.sex = sex
         self.ranking = ranking
+        self.id = ''
 
     def create_player(self):
-        return self.p_table.insert(
+        player_id = self.p_table.insert(
             {"last_name": self.last_name,
              "first_name": self.first_name,
              "birth_date": self.birth_date,
              "sex": self.sex,
              "ranking": self.ranking
              })
+        return self.p_table.update({'id': player_id}, doc_ids=[player_id])[0]
 
-    def get_player_from_id(self, id_num):
-        player_data = self.p_table.get(doc_id=int(id_num))
-        player = Player(
-            last_name=player_data["last_name"],
-            first_name=player_data["first_name"],
-            birth_date=player_data["birth_date"],
-            sex=player_data["sex"],
-            ranking=player_data["ranking"]
-        )
+    def save_player(self):
+        if self.id == '':
+            result = self.create_player()
+        else:
+            result = self.p_table.update(
+                {"last_name": self.last_name,
+                 "first_name": self.first_name,
+                 "birth_date": self.birth_date,
+                 "sex": self.sex,
+                 "ranking": self.ranking,
+                 "id": self.id
+                 }, doc_ids=[self.id])[0]
+        return result
+
+    @staticmethod
+    def get_player_from_id(id_num):
+        player = Player()
+        player_data = player.p_table.get(doc_id=int(id_num))
+        player.last_name = player_data["last_name"]
+        player.first_name = player_data["first_name"]
+        player.birth_date = player_data["birth_date"]
+        player.sex = player_data["sex"]
+        player.ranking = player_data["ranking"]
+        player.id = id_num
+
         return player
+
+    # this function is deprecated
 
     def get_player_id(self):
         # use first_name, last_name, birth_date to find the player in the db

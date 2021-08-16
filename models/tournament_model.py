@@ -7,7 +7,7 @@ db = TinyDB('db.json')
 
 class Tournament:
     def __init__(self, name="", location="", date_start="",
-                 date_end="", num_of_rounds=4, rounds=[], players=[],
+                 date_end="", num_of_rounds=4, rounds=None, players=None,
                  time_control="", description=""):
         self.t_table = db.table('tournaments')
         self.name = name
@@ -34,8 +34,10 @@ class Tournament:
              "description": self.description
              })
 
-    def get_tournament_from_id(self, id_num):
-        data = self.t_table.get(doc_id=int(id_num))
+    @staticmethod
+    def get_tournament_from_id(id_num):
+        tournament = Tournament()
+        data = tournament.t_table.get(doc_id=int(id_num))
         new_tournament = Tournament(
             name=data["name"],
             location=data["location"],
@@ -43,17 +45,19 @@ class Tournament:
             date_end=data["date_end"],
             num_of_rounds=data["num_of_rounds"],
             time_control=data["time_control"],
-            description=data["description"]
+            description=data["description"],
+            players=[],
+            rounds=[]
         )
         for player_id in data["players"]:
             print("player_id: ", player_id)
-            player = Player().get_player_from_id(player_id)
-            new_tournament.add_player(player)
+            player = Player.get_player_from_id(player_id)
+            new_tournament.players.append(player)
 
         for round_id in data["rounds"]:
             print("round_id: ", round_id)
-            round_ = Round().get_round_from_id(round_id)
-            new_tournament.add_round(round_)
+            round_ = Round.get_round_from_id(round_id)
+            new_tournament.rounds.append(round_)
 
         return new_tournament
 
