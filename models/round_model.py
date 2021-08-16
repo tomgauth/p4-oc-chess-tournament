@@ -35,26 +35,26 @@ class Round:
             "matches": matches_ids,
             "name": name})
 
-    def get_round_from_id(self, id_num):
-        # round_ = Round()
-        # round_.r_table.get(doc_id=int(id_num))
-        round_data = self.r_table.get(doc_id=int(id_num))
+    @staticmethod
+    def get_round_from_id(id_num):
+        round_ = Round()
+        round_data = round_.r_table.get(doc_id=int(id_num))
         print(round_data)
-        round_ = Round(
-            name=round_data['name'],
-            date_time_start=round_data['date_time_start'],
-            date_time_end=round_data['date_time_end'])
+        round_.name = round_data['name']
+        round_.date_time_start = round_data['date_time_start']
+        round_.date_time_end = round_data['date_time_end']
         print(round_.name)
         for match_id in round_data["matches"]:
             print(match_id)
-            match = Match().get_match_from_id(match_id)
-            round_.add_match(match) # THIS ADDS THE Matches to the model??
+            match = Match.get_match_from_id(match_id)
+            round_.matches.append(match)
 
         return round_
 
     # should not add it to self, but to the object
-    def add_match(round_, match):
-        round_.matches.append(match)
+    # @staticmethod
+    # def add_match(round_, match):
+    #     round_.matches.append(match)
 
     def generate_matches(self):
         matches_ids = []

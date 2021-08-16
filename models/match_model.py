@@ -37,16 +37,15 @@ class Match:
                  }, doc_ids=[self.id])[0]
         return result
 
-    # this function is not needed, as matches are not saved in db
-    def get_match_from_id(self, id_num):
-        match_data = self.m_table.get(doc_id=int(id_num))
+    @staticmethod
+    def get_match_from_id(id_num):
+        match = Match()
+        match_data = match.m_table.get(doc_id=int(id_num))
         print(match_data)
-        match = Match(
-            p1_id=match_data["p1_id"],
-            p1_score=match_data["p1_score"],
-            p2_id=match_data["p2_id"],
-            p2_score=match_data["p2_score"],
-        )
+        match.p1_id = match_data["p1_id"]
+        match.p1_score = match_data["p1_score"]
+        match.p2_id = match_data["p2_id"]
+        match.p2_score = match_data["p2_score"]
         match.id = id_num
         return match
 
