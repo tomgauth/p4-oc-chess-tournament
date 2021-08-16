@@ -1,4 +1,5 @@
 # This is the tournament controller
+from models.tournament_model import Tournament
 from models.player_model import Player
 from models.round_model import Round
 from models.match_model import Match
@@ -13,11 +14,11 @@ class TournamentController:
         self.selected_tournament = None
 
     def select_tournament(self):
-        tournaments = self.t_model.all_tournaments()
         self.show_tournaments()
         selection = int(self.view.get_input())
-        self.selected_tournament = tournaments[selection]
-        self.view.show_tournament_details(self.selected_tournament)
+        tournament = Tournament()
+        self.selected_tournament = tournament.get_tournament_from_id(selection)
+        self.show_tournament(self.selected_tournament)
         return self.selected_tournament
 
     def show_tournaments(self):
@@ -33,10 +34,7 @@ class TournamentController:
         pass
 
     def show_tournament(self, tournament):
-        players = []
-        for player_id in tournament['players']:
-            player = self.p_model.read_player(player_id)
-            players.append(player)
+        players = tournament.players
         self.view.show_tournament_details(tournament, players)
 
     def find_tournament(self, name):
@@ -47,9 +45,11 @@ class TournamentController:
 
     def add_player(self):
         self.p_model.first_name = self.view.get_input('player first name: ')
-        # p.last_name = self.view.get_input('player last name: ')
-        # p.sex = self.view.get_input('player sex (M/F/O: ')
-        # p.ranking = self.view.get_input('player ranking')
+        self.p_model.last_name = self.view.get_input('player last name: ')
+        self.p_model.sex = self.view.get_input('player sex (M/F/O): ')
+        self.p_model.birth_date = self.view.get_input(
+            'player birth date (DD/MM/YYYY): ')
+        self.p_model.ranking = int(self.view.get_input('player ranking'))
         player_id = self.p_model.create_player()
         return player_id
         # create a player
@@ -70,12 +70,10 @@ class TournamentController:
         """
         t = self.t_model
         t.name = self.view.get_input('name')
-        # t.location = self.view.get_input('location')
-        # t.date_start = self.view.get_input('date_start')
-        # t.date_end = self.view.get_input('date_end')
-        # t.num_of_rounds = self.view.get_input('num_of_rounds')
-        # t.rounds = self.view.get_input('rounds')
-        # t.time_control = self.view.get_input('time_control')
+        t.location = self.view.get_input('location')
+        t.date_start = self.view.get_input('date_start')
+        t.date_end = self.view.get_input('date_end')
+        t.time_control = self.view.get_input('time_control')
         added_players = self.add_players()
         print('create_tournament() added_players : ', added_players)
         t.players.extend(added_players)
@@ -95,20 +93,18 @@ class TournamentController:
 
     def start_tournament(self):
         # this controller will create and manage a tournament
-        selected_tournament = self.select_tournament()
+        tournament = self.select_tournament()
         # move this function to the player controller?
-        players = selected_tournament.sort_players_by_ranking()
-        matches = []
-        for i in range(int(len(players)/2)):
-            print(i, players[i].first_name, players[i+4].first_name)
-            player1_id = players[i].get_player_id()
-            player2_id = players[i+4].get_player_id()
-            print(player1_id, player2_id)
-            match = Match(p1_id=player1_id,p2_id=player2_id)
-            match.create_match()
-            matches.append(match)
+        players = self.sort_players_by_ranking()
+        matches = tournament.rounds[0].matches
 
-        selected_tournament.rounds[0].matches.append(matches)
+        for i in range(int(len(players)/2)):
+            matches[i].p1_id = players[i].get_player_id()
+            matches[i].p2_id = players[i+4].get_player_id()
+            matches[i].save_match()
+
+        # do not create new matches, populate existing matches
+        tournament.rounds[0].matches.append(matches)
 
         return matches # todo remove later
 

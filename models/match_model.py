@@ -10,6 +10,9 @@ class Match:
         self.p1_score = p1_score
         self.p2_id = p2_id
         self.p2_score = p2_score
+        self.id = ''
+
+    # call a function that gets the self.id
 
     def tuple(self):
         return ([self.p1_id, self.p1_score], [self.p2_id, self.p2_score])
@@ -20,7 +23,19 @@ class Match:
             'p1_score': self.p1_score,
             'p2_id': self.p2_id,
             'p2_score': self.p2_score
-            })
+        })
+
+    def save_match(self):
+        if self.id == '':
+            result = self.create_match()
+        else:
+            result = self.m_table.update(
+                {'p1_id': self.p1_id,
+                 'p1_score': self.p1_score,
+                 'p2_id': self.p2_id,
+                 'p2_score': self.p2_score
+                 }, doc_ids=[self.id])[0]
+        return result
 
     # this function is not needed, as matches are not saved in db
     def get_match_from_id(self, id_num):
@@ -30,8 +45,9 @@ class Match:
             p1_id=match_data["p1_id"],
             p1_score=match_data["p1_score"],
             p2_id=match_data["p2_id"],
-            p2_score=match_data["p2_score"]
+            p2_score=match_data["p2_score"],
         )
+        match.id = id_num
         return match
 
     def read_match(self, id_num):
