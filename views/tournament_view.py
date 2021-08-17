@@ -24,6 +24,42 @@ Ranking: {}
       ----        """.format(player.first_name, player.last_name,
                              player.ranking))
 
+    def show_round_details(self, round_):
+        print("""{}
+date time start: {}
+date time end:   {}
+
+MATCHES:
+          """.format(
+            round_.name, round_.date_time_start,
+            round_.date_time_end))
+        for match in round_.matches:
+            players = match.players()
+            p1 = players[0]
+            p2 = players[1]
+            print("""
+{} {} vs {} {}
+Score:      {} - {}
+-----------------------""".format(
+                p1.first_name, p1.last_name, p2.first_name, p2.last_name,
+                match.p1_score, match.p2_score))
+
+    def pick_match_winner(self, match):
+        players = match.players()
+        p1 = players[0]
+        p2 = players[1]
+        print("""
+{} {} vs {} {}
+Score:      {} - {}
+-----------------------""".format(
+            p1.first_name, p1.last_name, p2.first_name, p2.last_name,
+            match.p1_score, match.p2_score))
+        print("""WHO WON?
+1 - {} {} Won
+2 - {} {} Won
+3 - Tie""".format(p1.first_name, p1.last_name, p2.first_name, p2.last_name))
+        return self.get_input("type 1,2 or 3")
+
     def display_actions(self):
         print('''TOURNAMENTS MENU
 Select an action:

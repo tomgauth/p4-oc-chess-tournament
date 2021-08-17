@@ -12,12 +12,13 @@ class TournamentController:
         self.p_model = player_model
         self.view = view
 
-    def select_tournament(self):
+    def select_tournament(self, show=False):
         self.show_tournaments()
         selection = int(self.view.get_input())
         tournament = Tournament()
         selected_tournament = tournament.get_tournament_from_id(selection)
-        self.show_tournament(selected_tournament)
+        if show:
+            self.show_tournament(selected_tournament)
         return selected_tournament
 
     def show_tournaments(self):
@@ -101,19 +102,42 @@ class TournamentController:
             match.p2_id = players[i+4].get_player_id()
             match.save_match()
 
-        # do not create new matches, populate existing matches
-        # change the line below to get updated matches (from id?)
+        # tournament is started and its Round1 is populated
 
-        return tournament  # todo remove later
+        round1 = tournament.rounds[0]
+        round1.start_round()
+        # show round1
+        self.view.show_round_details(round1)
+        while True:
+            status = self.view.get_input('type "END" to close the round')
+            if not status == 'END':
+                continue
+            else:
+                break
 
-        """
-        allow the user to update the results of the matches
-          - find a player
-          - update the match where the player participated with the result of
-        the match
-        Generate new matches for the players
-        Update again the results
-        """
+        round1.finish_round()
+
+        # enter the results for each match
+        for match in round1.matches:
+            result = self.view.pick_match_winner(match)
+            if result == '1':
+                match.p1_won()
+            if result == '2':
+                match.p2_won()
+            if result == '3':
+                match.tie()
+            else:
+                print('wrong input')
+            match.save_match()
+        self.view.show_round_details(round1)
+
+        while True:
+            status = self.view.get_input('type "ROUN2" to start round2')
+            if not status == 'ROUND2':
+                continue
+            else:
+                break
+
 
     def select(self, selection):
         if selection == '1':

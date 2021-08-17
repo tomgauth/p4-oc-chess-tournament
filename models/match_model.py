@@ -1,6 +1,7 @@
 # This is the match model
 from tinydb import TinyDB
 db = TinyDB('db.json')
+from models.player_model import Player
 
 
 class Match:
@@ -38,6 +39,24 @@ class Match:
                  'id': self.id
                  }, doc_ids=[self.id])[0]
         return result
+
+    def players(self):
+        players = []
+        players.append(Player.get_player_from_id(self.p1_id))
+        players.append(Player.get_player_from_id(self.p2_id))
+        return players
+
+    def p1_won(self):
+        self.p1_score = 1
+        self.p2_score = 0
+
+    def p2_won(self):
+        self.p1_score = 0
+        self.p2_score = 1
+
+    def tie(self):
+        self.p1_score = 0.5
+        self.p2_score = 0.5
 
     @staticmethod
     def get_match_from_id(id_num):

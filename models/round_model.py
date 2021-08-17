@@ -27,8 +27,6 @@ class Round:
     def start_round(self):
         self.date_time_start = self.date_time_now()
 
-    """TODO: handle save if round already exists """
-
     def create_round(self, round_num):
         self.name = "Round{}".format(round_num)
         self.matches = self.generate_matches()
