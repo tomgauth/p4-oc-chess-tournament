@@ -38,6 +38,29 @@ class Player:
                  }, doc_ids=[self.id])[0]
         return result
 
+    def current_score(self, tournament):
+        score = 0
+        for round_ in tournament.rounds:
+            for match in round_.matches:
+                if match.p1_score != '':
+                    if match.p1_id == self.id:
+                        score += match.p1_score
+                    elif match.p2_id == self.id:
+                        score += match.p2_score
+        return score
+
+    def played_against(self, tournament):
+        previous_opponents = []
+        for round_ in tournament.rounds:
+            for match in round_.matches:
+                if match.p1_id == self.id:
+                    player2 = Player.get_player_from_id(match.p2_id)
+                    previous_opponents.append(player2)
+                elif match.p2_id == self.id:
+                    player1 = Player.get_player_from_id(match.p1_id)
+                    previous_opponents.append(player1)
+        return previous_opponents
+
     @staticmethod
     def get_player_from_id(id_num):
         player = Player()

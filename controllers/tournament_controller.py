@@ -132,12 +132,65 @@ class TournamentController:
         self.view.show_round_details(round1)
 
         while True:
-            status = self.view.get_input('type "ROUN2" to start round2')
+            status = self.view.get_input('type "ROUND2" to start round2')
             if not status == 'ROUND2':
                 continue
             else:
                 break
 
+        round2 = tournament.rounds[1]
+        srtd_players = sorted(
+            tournament.players, key=lambda x: x.current_score(tournament),
+            reverse=True)
+        print('srtd_players: ', srtd_players)
+
+        for i in range(int(len(srtd_players)/2)):
+            player = srtd_players[i]
+            previous_opponents = player.played_against(tournament)
+            next_opponents = [
+                op for op in srtd_players if op not in previous_opponents
+                ]
+            print(' player id , next_opponents')
+            print(player.id)
+            if player.id in next_opponents:
+                next_opponents.remove(player.id)
+            print(next_opponents)
+            match = round2.matches[i]
+            match.p1_id = player.id
+            match.p2_id = next_opponents[0]
+            print('match p1, p2:')
+            print(match.p1_id)
+            print(match.p2_id)
+            match.save_match()
+            srtd_players.remove(player)
+            player2 = next((x for x in srtd_players if x.id == match.p2_id), None)
+            print('player2.id: ', player2.id)
+            srtd_players.remove(player2)
+            i += 1
+            pass
+        # i = 0
+        # srtd_players
+        # for match in round2.matches:
+        #     p1 = srtd_players[i]
+        #     srtd_players.remove(p1)
+        #     previous_opponents = p1.played_against(tournament)
+        #     next_opponents = [
+        #         op.id for op in srtd_players if op.id not in previous_opponents
+        #         ]
+        #     p2 =
+        #     p2 = next_opponents[0]
+
+
+
+            # match = round2.matches[i]
+            # find previous matches in Round1.matches where player[i].id
+            # while player[i+1].id in match.played_against():
+            # if player[i+1].id in match.played_against():
+            #     match.p1_id = player[i].id
+            #     match.p2_id = player[i+1].id
+            # else:
+            #     match.p1_id = player[i].id
+            #     match.p2_id = player[i+2].id
 
     def select(self, selection):
         if selection == '1':
