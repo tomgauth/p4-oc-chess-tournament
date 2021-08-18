@@ -90,107 +90,119 @@ class TournamentController:
         srtd_players = sorted(players, key=lambda x: x.ranking, reverse=False)
         return srtd_players
 
+    def start_round(self, tournament, round_):
+        if round_.name == 'Round1':
+            print('round1')
+            players = self.sort_players_by_ranking(tournament.players)
+
+            for i in range(int(len(players)/2)):
+                match = round_.matches[i]
+                match.p1_id = players[i].get_player_id()
+                match.p2_id = players[i+4].get_player_id()
+                match.save_match()
+
+            round1 = round_
+            round1.start_round()
+            # show round1
+            self.view.show_round_details(round1)
+
+            while True:
+                status = self.view.get_input('type "END" to close the round')
+                if not status == 'END':
+                    continue
+                else:
+                    break
+            round1.finish_round()
+
+            for match in round1.matches:
+                result = self.view.pick_match_winner(match)
+                if result == '1':
+                    match.p1_won()
+                if result == '2':
+                    match.p2_won()
+                if result == '3':
+                    match.tie()
+                else:
+                    print('wrong input')
+                match.save_match()
+            self.view.show_round_details(round1)
+        else:
+            while True:
+                status = self.view.get_input(
+                    'type "START" to start {}'.format(round_.name))
+                if not status == 'START':
+                    continue
+                else:
+                    break
+
+            srtd_players = sorted(
+                tournament.players, key=lambda x: (x.current_score(tournament),
+                                                   x.ranking), reverse=True)
+            print('srtd_players: ', srtd_players)
+
+            """ special case for player 1 """
+
+            p1 = srtd_players[0]
+            srtd_players.remove(p1)
+            if srtd_players[0] in p1.played_against(tournament):
+                p2 = srtd_players[1]
+            else:
+                p2 = srtd_players[0]
+            srtd_players.remove(p2)
+            match = round_.matches[0]
+            match.p1_id = p1.id
+            match.p2_id = p2.id
+            match.save_match()
+
+            """ create the matches for the other players """
+            i = 1
+            while len(srtd_players) > 0:
+                p1 = srtd_players[0]
+                srtd_players.remove(p1)
+                p2 = srtd_players[0]
+                srtd_players.remove(p2)
+                match = round_.matches[i]
+                match.p1_id = p1.id
+                match.p2_id = p2.id
+                match.save_match()
+                i += 1
+
+            round_.start_round()
+            self.view.show_round_details(round_)
+
+            while True:
+                status = self.view.get_input('type "END" to close the round')
+                if not status == 'END':
+                    continue
+                else:
+                    break
+            round_.finish_round()
+            for match in round_.matches:
+                result = self.view.pick_match_winner(match)
+                if result == '1':
+                    match.p1_won()
+                if result == '2':
+                    match.p2_won()
+                if result == '3':
+                    match.tie()
+                else:
+                    print('wrong input')
+                match.save_match()
+            self.view.show_round_details(round_)
+
     def start_tournament(self):
         # this controller will create and manage a tournament
         tournament = self.select_tournament()
-        # move this function to the player controller?
-        players = self.sort_players_by_ranking(tournament.players)
+        # move this function to the round controller?
+        for round_ in tournament.rounds:
+            self.start_round(tournament, round_)
 
-        for i in range(int(len(players)/2)):
-            match = tournament.rounds[0].matches[i]
-            match.p1_id = players[i].get_player_id()
-            match.p2_id = players[i+4].get_player_id()
-            match.save_match()
-
-        # tournament is started and its Round1 is populated
-
-        round1 = tournament.rounds[0]
-        round1.start_round()
-        # show round1
-        self.view.show_round_details(round1)
-        while True:
-            status = self.view.get_input('type "END" to close the round')
-            if not status == 'END':
-                continue
-            else:
-                break
-
-        round1.finish_round()
-
-        # enter the results for each match
-        for match in round1.matches:
-            result = self.view.pick_match_winner(match)
-            if result == '1':
-                match.p1_won()
-            if result == '2':
-                match.p2_won()
-            if result == '3':
-                match.tie()
-            else:
-                print('wrong input')
-            match.save_match()
-        self.view.show_round_details(round1)
-
-        while True:
-            status = self.view.get_input('type "ROUND2" to start round2')
-            if not status == 'ROUND2':
-                continue
-            else:
-                break
-
-        round2 = tournament.rounds[1]
+        # sort the players by score
         srtd_players = sorted(
             tournament.players, key=lambda x: x.current_score(tournament),
             reverse=True)
-        print('srtd_players: ', srtd_players)
 
-        for i in range(int(len(srtd_players)/2)):
-            player = srtd_players[i]
-            previous_opponents = player.played_against(tournament)
-            next_opponents = [
-                op for op in srtd_players if op not in previous_opponents
-                ]
-            print(' player id , next_opponents')
-            print(player.id)
-            if player.id in next_opponents:
-                next_opponents.remove(player.id)
-            print(next_opponents)
-            match = round2.matches[i]
-            match.p1_id = player.id
-            match.p2_id = next_opponents[0]
-            print('match p1, p2:')
-            print(match.p1_id)
-            print(match.p2_id)
-            match.save_match()
-            srtd_players.remove(player)
-            player2 = next((x for x in srtd_players if x.id == match.p2_id), None)
-            print('player2.id: ', player2.id)
-            srtd_players.remove(player2)
-            i += 1
-            pass
-        # i = 0
-        # srtd_players
-        # for match in round2.matches:
-        #     p1 = srtd_players[i]
-        #     srtd_players.remove(p1)
-        #     previous_opponents = p1.played_against(tournament)
-        #     next_opponents = [
-        #         op.id for op in srtd_players if op.id not in previous_opponents
-        #         ]
-        #     p2 =
-        #     p2 = next_opponents[0]
-
-
-
-            # match = round2.matches[i]
-            # find previous matches in Round1.matches where player[i].id
-            # while player[i+1].id in match.played_against():
-            # if player[i+1].id in match.played_against():
-            #     match.p1_id = player[i].id
-            #     match.p2_id = player[i+1].id
-            # else:
-            #     match.p1_id = player[i].id
-            #     match.p2_id = player[i+2].id
+        self.view.show_ranked_players(srtd_players, tournament)
 
     def select(self, selection):
         if selection == '1':

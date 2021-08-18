@@ -60,6 +60,13 @@ Score:      {} - {}
 3 - Tie""".format(p1.first_name, p1.last_name, p2.first_name, p2.last_name))
         return self.get_input("type 1,2 or 3")
 
+    def show_ranked_players(self, sorted_players, tournament):
+        for idx, p in enumerate(sorted_players):
+            position = idx+1
+            p.score = p.current_score(tournament)
+            print("""{} - [{}] {} {} """.format(
+                position, p.score, p.first_name, p.last_name))
+
     def display_actions(self):
         print('''TOURNAMENTS MENU
 Select an action:
