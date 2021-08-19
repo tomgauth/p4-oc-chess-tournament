@@ -1,21 +1,35 @@
 # This is the player model
+from views.master_view import MasterView
 
 
-class PlayerView:
+class PlayerView(MasterView):
 
-    def __init__(self):
-        pass
-
-    def show_players(players):
+    def print_players(self, players):
         for player in players:
-            print(player)
-        pass
+            print("ID:{} {} - {}".format(player.id, player.first_name,
+                                         player.last_name,
+                                         ))
 
-    def show_player(player):
-        print(player.first_name + " " + player.last_name)
-        print("ranking:" + player.ranking)
-        print("Date of birth" + player.birth_date)
+    def show_player(self, player):
+        print("""
+{} - {} {}
+Ranking: {}
+Date of Birth: {}
+Sex: {}
+          """.format(
+            player.id, player.first_name, player.last_name, player.ranking,
+            player.birth_date, player.sex))
 
-    def get_input_player(details):
-        # NOTE maybe a parent class should handle this?
-        pass
+    def custom_message(self, message):
+        print(message)
+
+    def display_actions(self):
+        print('''
+PLAYERS MENU
+============
+
+Select an action:
+1. See all players
+2. Edit a player
+3. Back to main menu
+          ''')

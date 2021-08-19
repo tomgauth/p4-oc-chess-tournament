@@ -13,8 +13,6 @@ class Match:
         self.p2_score = p2_score
         self.id = ''
 
-    # call a function that gets the self.id
-
     def tuple(self):
         return ([self.p1_id, self.p1_score], [self.p2_id, self.p2_score])
 

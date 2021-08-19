@@ -12,7 +12,7 @@ class MainMenuController:
         if selection == 1:
             self.t_controller.run()
         elif selection == 2:
-            self.p_controller
+            self.p_controller.run()
         elif selection == 3:
             print("Goodbye")
         else:

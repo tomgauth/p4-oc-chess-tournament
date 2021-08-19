@@ -47,18 +47,16 @@ class TournamentController:
         view = self.view.sanitised_input
         p.first_name = view('player first name: ', type_=str.capitalize,
                             len_min=2)
-        """
         p.last_name = view('player last name: ', type_=str.capitalize,
                            len_min=2)
         p.sex = view('player sex (M/F/O): ', type_=str.upper,
                      range_=['M', 'F', 'O'])
         p.birth_date = view(
             'player birth date (ddmmyyy): ', type_=str, len_min=8, len_max=8)
-        """
+
         p.ranking = view('player ranking: ', type_=int, min_=0, max_=4000)
         player_id = p.save_player()
         return player_id
-        # create a player
 
     def add_players(self):
         added_players = []  # list of player key_ids
@@ -71,24 +69,26 @@ class TournamentController:
     def create_tournament(self):
         t = self.t_model
         view = self.view.sanitised_input
-        t.name = view('name ', type_=str, len_min=2)
-        """
-        t.location = view('location ', type_=str)
+        t.name = view('name: ', type_=str, len_min=2)
+        t.location = view('location: ', type_=str)
+        t.num_of_rounds = view('number of rounds (4 by default): ', type_=int,
+                               min_=1,
+                               default=4)
         t.date_start = view('date start (ddmmyyyy) ', type_=str, len_min=8,
                             len_max=8)
-        t.date_end = view('date end (ddmmyyyy) ', type_=str, len_min=8,
+        t.date_end = view('date end (ddmmyyyy) (default same as date start) ',
+                          type_=str, len_min=8, default=t.date_start,
                           len_max=8)
         t.time_control = view('time_control: (bullet, blitz or rapid) ',
+                              type_=str.lower,
                               range_=['bullet', 'blitz', 'rapid'])
-        """
+        t.description = view('description: ', type_=str)
         added_players = self.add_players()
         t.players = added_players
         tournament_id = t.save_tournament()
         created_tournament = Tournament.get_tournament_from_id(tournament_id)
         self.show_tournament(created_tournament)
         return True
-        # from self.model get the attr
-        # create a tournament from Model
 
     def sort_players_by_ranking(self, players):
         srtd_players = sorted(players, key=lambda x: x.ranking, reverse=False)
@@ -215,10 +215,6 @@ class TournamentController:
             return self.start_tournament()
         elif selection == 5:
             print("Back to Main Menu")
-
-    def select_action(self):
-
-        return
 
     def run(self):
         running = True

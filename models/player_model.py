@@ -94,7 +94,12 @@ class Player:
 
     def read_players(self):
         """ returns all players """
-        return self.p_table.all()
+        all_players = []
+        players_from_db = self.p_table.all()
+        for pl in players_from_db:
+            player = Player.get_player_from_id(pl.doc_id)
+            all_players.append(player)
+        return all_players
 
     def update_player(self, id_num, obj):
         return self.p_table.update(obj, doc_ids=[id_num])

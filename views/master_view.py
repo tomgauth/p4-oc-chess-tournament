@@ -4,7 +4,7 @@
 class MasterView:
 
     def sanitised_input(self, prompt, type_=None, min_=None, max_=None,
-                        len_min=None, len_max=None, range_=None):
+                        len_min=None, len_max=None, range_=None, default=None):
 
         if min_ is not None and max_ is not None and max_ < min_:
             raise ValueError("min_ must be less than or equal to max_.")
@@ -12,6 +12,9 @@ class MasterView:
             raise ValueError("len_min must be less than or equal to len_max.")
         while True:
             ui = input(prompt)
+
+            if default is not None and ui == '':
+                ui = default
 
             if type_ is not None:
                 try:
@@ -24,7 +27,7 @@ class MasterView:
             elif min_ is not None and ui < min_:
                 print("Input must be greater than or equal to {0}.".format(
                     min_))
-            elif len_max is not None and len(str(ui)) > len_max:
+            if len_max is not None and len(str(ui)) > len_max:
                 print("Input length must be shorter than or equal to {0}."
                       .format(len_max))
             elif len_min is not None and len(str(ui)) < len_min:
