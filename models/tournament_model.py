@@ -19,47 +19,68 @@ class Tournament:
         self.players = players
         self.time_control = time_control
         self.description = description
+        self.id = ''
 
     def create_tournament(self):
-        rounds_ids = self.generate_rounds()
-        return self.t_table.insert(
+        self.rounds_ids = self.generate_rounds()
+        tournament_id = self.t_table.insert(
             {"name": self.name,
              "location": self.location,
              "date_start": self.date_start,
              "date_end": self.date_end,
              "num_of_rounds": self.num_of_rounds,
-             "rounds": rounds_ids,
+             "rounds": self.rounds_ids,
              "players": self.players,
              "time_control": self.time_control,
              "description": self.description
              })
+        return self.t_table.update(
+            {'id': tournament_id}, doc_ids=[tournament_id])[0]
+
+    def save_tournament(self):
+        if self.id == '':
+            result = self.create_tournament()
+        else:
+            result = self.t_table.update(
+                {"name": self.name,
+                 "location": self.location,
+                 "date_start": self.date_start,
+                 "date_end": self.date_end,
+                 "num_of_rounds": self.num_of_rounds,
+                 "rounds": self.rounds,
+                 "players": self.players,
+                 "time_control": self.time_control,
+                 "description": self.description,
+                 "id": self.id
+                 }, doc_ids=[self.id])[0]
+        return result
 
     @staticmethod
     def get_tournament_from_id(id_num):
         tournament = Tournament()
         data = tournament.t_table.get(doc_id=int(id_num))
-        new_tournament = Tournament(
-            name=data["name"],
-            location=data["location"],
-            date_start=data["date_start"],
-            date_end=data["date_end"],
-            num_of_rounds=data["num_of_rounds"],
-            time_control=data["time_control"],
-            description=data["description"],
-            players=[],
-            rounds=[]
-        )
+        tournament.name = data["name"]
+        tournament.location = data["location"]
+        tournament.date_start = data["date_start"]
+        tournament.date_end = data["date_end"]
+        tournament.num_of_rounds = data["num_of_rounds"]
+        tournament.time_control = data["time_control"]
+        tournament.description = data["description"]
+        tournament.players = []
+        tournament.rounds = []
+        tournament.id = id_num
+
         for player_id in data["players"]:
             print("player_id: ", player_id)
             player = Player.get_player_from_id(player_id)
-            new_tournament.players.append(player)
+            tournament.players.append(player)
 
         for round_id in data["rounds"]:
             print("round_id: ", round_id)
             round_ = Round.get_round_from_id(round_id)
-            new_tournament.rounds.append(round_)
+            tournament.rounds.append(round_)
 
-        return new_tournament
+        return tournament
 
     def generate_rounds(self):
         rounds_ids = []
@@ -89,7 +110,12 @@ class Tournament:
 
     def read_tournaments(self):
         """ returns all tournaments """
-        return self.t_table.all()
+        tournaments_in_db = self.t_table.all()
+        all_tournaments = []
+        for tr in tournaments_in_db:
+            tournament = Tournament.get_tournament_from_id(tr.doc_id)
+            all_tournaments.append(tournament)
+        return all_tournaments
 
     def update_tournament(self, id_num, obj):
         return self.t_table.update(obj, doc_ids=[id_num])

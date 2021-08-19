@@ -67,11 +67,6 @@ class Round:
 
         return round_
 
-    # should not add it to self, but to the object
-    # @staticmethod
-    # def add_match(round_, match):
-    #     round_.matches.append(match)
-
     def generate_matches(self):
         matches_ids = []
         for i in range(4):

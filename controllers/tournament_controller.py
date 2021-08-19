@@ -3,6 +3,7 @@ from models.tournament_model import Tournament
 from models.player_model import Player
 from models.round_model import Round
 from models.match_model import Match
+from controllers.main_menu_controller import MainMenuController
 
 
 class TournamentController:
@@ -13,8 +14,12 @@ class TournamentController:
         self.view = view
 
     def select_tournament(self, show=False):
-        self.show_tournaments()
-        selection = int(self.view.get_input())
+        all_tournaments = self.show_tournaments()
+        tournaments_ids = []
+        for tournament in all_tournaments:
+            tournaments_ids.append(tournament.id)
+        selection = self.view.sanitised_input('=> ', type_=int,
+                                              range_=tournaments_ids)
         tournament = Tournament()
         selected_tournament = tournament.get_tournament_from_id(selection)
         if show:
@@ -23,15 +28,9 @@ class TournamentController:
 
     def show_tournaments(self):
         # do something
-        list_tournaments = self.t_model.read_tournaments()
-        self.view.print_tournaments(list_tournaments)
-        return True
-
-    def delete_tournament():
-        # prompts tournament name
-        # pass to model to destroy the tournament
-        # view shows ("tournament {name} has been deleted")
-        pass
+        all_tournaments = self.t_model.read_tournaments()
+        self.view.print_tournaments(all_tournaments)
+        return all_tournaments
 
     def show_tournament(self, tournament):
         players = tournament.players
@@ -44,13 +43,20 @@ class TournamentController:
                 return tournament
 
     def add_player(self):
-        self.p_model.first_name = self.view.get_input('player first name: ')
-        # self.p_model.last_name = self.view.get_input('player last name: ')
-        # self.p_model.sex = self.view.get_input('player sex (M/F/O): ')
-        # self.p_model.birth_date = self.view.get_input(
-        #     'player birth date (DD/MM/YYYY): ')
-        # self.p_model.ranking = int(self.view.get_input('player ranking'))
-        player_id = self.p_model.save_player()
+        p = self.p_model
+        view = self.view.sanitised_input
+        p.first_name = view('player first name: ', type_=str.capitalize,
+                            len_min=2)
+        """
+        p.last_name = view('player last name: ', type_=str.capitalize,
+                           len_min=2)
+        p.sex = view('player sex (M/F/O): ', type_=str.upper,
+                     range_=['M', 'F', 'O'])
+        p.birth_date = view(
+            'player birth date (ddmmyyy): ', type_=str, len_min=8, len_max=8)
+        """
+        p.ranking = view('player ranking: ', type_=int, min_=0, max_=4000)
+        player_id = p.save_player()
         return player_id
         # create a player
 
@@ -63,24 +69,22 @@ class TournamentController:
         return added_players
 
     def create_tournament(self):
-        """ create a new Tournament() object
-            for each value, gets input from the view
-            add the value to the tournament
-            ask model to create_tournament() to save
-        """
         t = self.t_model
-        t.name = self.view.get_input('name')
-        t.location = self.view.get_input('location')
-        t.date_start = self.view.get_input('date_start')
-        t.date_end = self.view.get_input('date_end')
-        t.time_control = self.view.get_input('time_control')
+        view = self.view.sanitised_input
+        t.name = view('name ', type_=str, len_min=2)
+        """
+        t.location = view('location ', type_=str)
+        t.date_start = view('date start (ddmmyyyy) ', type_=str, len_min=8,
+                            len_max=8)
+        t.date_end = view('date end (ddmmyyyy) ', type_=str, len_min=8,
+                          len_max=8)
+        t.time_control = view('time_control: (bullet, blitz or rapid) ',
+                              range_=['bullet', 'blitz', 'rapid'])
+        """
         added_players = self.add_players()
-        print('create_tournament() added_players : ', added_players)
         t.players = added_players
-        print("t_players : ", t.players)
-        tournament_id = t.create_tournament()
+        tournament_id = t.save_tournament()
         created_tournament = Tournament.get_tournament_from_id(tournament_id)
-        print("SAVED TOURNMANET", created_tournament)
         self.show_tournament(created_tournament)
         return True
         # from self.model get the attr
@@ -106,39 +110,35 @@ class TournamentController:
             # show round1
             self.view.show_round_details(round1)
 
-            while True:
-                status = self.view.get_input('type "END" to close the round')
-                if not status == 'END':
-                    continue
-                else:
-                    break
+            self.view.sanitised_input(
+                'type "END" to close the round: ', type_=str.upper,
+                range_=['END'])
+
             round1.finish_round()
 
             for match in round1.matches:
-                result = self.view.pick_match_winner(match)
-                if result == '1':
+                self.view.pick_match_winner(match)
+                result = self.view.sanitised_input("type 1,2 or 3: ",
+                                                   type_=int,
+                                                   range_=[1, 2, 3])
+                if result == 1:
                     match.p1_won()
-                if result == '2':
+                if result == 2:
                     match.p2_won()
-                if result == '3':
+                if result == 3:
                     match.tie()
-                else:
-                    print('wrong input')
                 match.save_match()
+
             self.view.show_round_details(round1)
         else:
-            while True:
-                status = self.view.get_input(
-                    'type "START" to start {}'.format(round_.name))
-                if not status == 'START':
-                    continue
-                else:
-                    break
+
+            self.view.sanitised_input(
+                'type "START" to start {}: '.format(round_.name),
+                type_=str.upper, range_=['START'])
 
             srtd_players = sorted(
                 tournament.players, key=lambda x: (x.current_score(tournament),
                                                    x.ranking), reverse=True)
-            print('srtd_players: ', srtd_players)
 
             """ special case for player 1 """
 
@@ -170,23 +170,23 @@ class TournamentController:
             round_.start_round()
             self.view.show_round_details(round_)
 
-            while True:
-                status = self.view.get_input('type "END" to close the round')
-                if not status == 'END':
-                    continue
-                else:
-                    break
+            self.view.sanitised_input(
+                'type "END" to close the round: ', type_=str.upper,
+                range_=['END'])
+
             round_.finish_round()
             for match in round_.matches:
-                result = self.view.pick_match_winner(match)
-                if result == '1':
+                self.view.pick_match_winner(match)
+                result = self.view.sanitised_input('type 1,2 or 3: ',
+                                                   type_=int,
+                                                   range_=[1, 2, 3])
+                if result == 1:
                     match.p1_won()
-                if result == '2':
+                if result == 2:
                     match.p2_won()
-                if result == '3':
+                if result == 3:
                     match.tie()
-                else:
-                    print('wrong input')
+
                 match.save_match()
             self.view.show_round_details(round_)
 
@@ -205,17 +205,29 @@ class TournamentController:
         self.view.show_ranked_players(srtd_players, tournament)
 
     def select(self, selection):
-        if selection == '1':
+        if selection == 1:
             return self.create_tournament()
-        elif selection == '2':
+        elif selection == 2:
             return self.show_tournaments()
-        elif selection == '3':
+        elif selection == 3:
             print('edit a tournament')
-        elif selection == '4':
+        elif selection == 4:
             return self.start_tournament()
-        else:
-            print("Invalid Input")
+        elif selection == 5:
+            print("Back to Main Menu")
 
     def select_action(self):
-        self.view.display_actions()
-        return self.select(self.view.get_input())
+
+        return
+
+    def run(self):
+        running = True
+        while running:
+            prompt = self.view.display_actions()
+            selection = self.view.sanitised_input(prompt, type_=int,
+                                                  range_=[1, 2, 3, 4, 5])
+            self.select(selection)
+            if selection == 5:
+                break
+            print("Running: TContrller", running)
+

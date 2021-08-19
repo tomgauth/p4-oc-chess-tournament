@@ -1,15 +1,15 @@
 # A View should never call its own methods. Only a Controller should do it.
-class TournamentView():
+from views.master_view import MasterView
+
+
+class TournamentView(MasterView):
 
     def get_input(self, prompt=None):
-        if prompt:
-            print(prompt)
-        user_input = input("=> ")
-        return user_input
+        self.sanitised_input(prompt)
 
     def print_tournaments(self, tournaments):
         for tr in tournaments:
-            print("{} - {}".format(tr.doc_id, tr['name']))
+            print("{} - {}".format(tr.id, tr.name))
 
     def show_tournament_details(self, tournament, players):
         print("""TOURNAMENT {}
@@ -58,7 +58,6 @@ Score:      {} - {}
 1 - {} {} Won
 2 - {} {} Won
 3 - Tie""".format(p1.first_name, p1.last_name, p2.first_name, p2.last_name))
-        return self.get_input("type 1,2 or 3")
 
     def show_ranked_players(self, sorted_players, tournament):
         for idx, p in enumerate(sorted_players):
@@ -74,4 +73,5 @@ Select an action:
 2. See tournaments
 3. Edit a tournament
 4. Start a tournament
+5. Back to main menu
           ''')

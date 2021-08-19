@@ -1,13 +1,8 @@
 # This is the main menu view
+from views.master_view import MasterView
 
 
-class MainMenuView():
-
-    # this method should be inherited from MasterView.
-    # TODO: implement inheritance from MasterView
-    def get_input(self):
-            user_input = input("=> ")
-            return user_input
+class MainMenuView(MasterView):
 
     def display_actions(self):
         print('''Select an option:
