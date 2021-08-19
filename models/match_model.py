@@ -62,7 +62,6 @@ class Match:
     def get_match_from_id(id_num):
         match = Match()
         match_data = match.m_table.get(doc_id=int(id_num))
-        print(match_data)
         match.p1_id = match_data["p1_id"]
         match.p1_score = match_data["p1_score"]
         match.p2_id = match_data["p2_id"]

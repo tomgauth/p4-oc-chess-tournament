@@ -8,6 +8,9 @@ class TournamentView(MasterView):
         self.sanitised_input(prompt)
 
     def print_tournaments(self, tournaments):
+        print("""
+TOURNAMENTS
+===========""")
         for tr in tournaments:
             print("{} - {}".format(tr.id, tr.name))
 
@@ -67,7 +70,10 @@ Score:      {} - {}
                 position, p.score, p.first_name, p.last_name))
 
     def display_actions(self):
-        print('''TOURNAMENTS MENU
+        print('''
+TOURNAMENTS MENU
+================
+
 Select an action:
 1. Create a tournament
 2. See tournaments

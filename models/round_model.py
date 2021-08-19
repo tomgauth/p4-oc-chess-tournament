@@ -54,14 +54,11 @@ class Round:
     def get_round_from_id(id_num):
         round_ = Round()
         round_data = round_.r_table.get(doc_id=int(id_num))
-        print(round_data)
         round_.name = round_data['name']
         round_.date_time_start = round_data['date_time_start']
         round_.date_time_end = round_data['date_time_end']
-        print(round_.name)
         round_.matches = []
         for match_id in round_data["matches"]:
-            print(match_id)
             match = Match.get_match_from_id(match_id)
             round_.matches.append(match)
 
@@ -80,8 +77,13 @@ class Round:
         return self.r_table.get(doc_id=id_num)
 
     def read_rounds(self):
-        """ returns all rounds """
-        return self.r_table.all()
+        """ returns all tournaments """
+        rounds_in_db = self.t_table.all()
+        all_rounds = []
+        for round_ in rounds_in_db:
+            round_ = Round.get_tournament_from_id(round_.doc_id)
+            all_rounds.append(round_)
+        return all_rounds
 
     def update_round(self, id_num, obj):
         return self.r_table.update(obj, doc_ids=[id_num])

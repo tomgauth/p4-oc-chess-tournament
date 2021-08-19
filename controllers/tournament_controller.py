@@ -223,11 +223,10 @@ class TournamentController:
     def run(self):
         running = True
         while running:
-            prompt = self.view.display_actions()
-            selection = self.view.sanitised_input(prompt, type_=int,
+            self.view.display_actions()
+            selection = self.view.sanitised_input("=>", type_=int,
                                                   range_=[1, 2, 3, 4, 5])
             self.select(selection)
             if selection == 5:
                 break
-            print("Running: TContrller", running)
 

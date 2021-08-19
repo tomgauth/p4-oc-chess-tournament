@@ -71,12 +71,10 @@ class Tournament:
         tournament.id = id_num
 
         for player_id in data["players"]:
-            print("player_id: ", player_id)
             player = Player.get_player_from_id(player_id)
             tournament.players.append(player)
 
         for round_id in data["rounds"]:
-            print("round_id: ", round_id)
             round_ = Round.get_round_from_id(round_id)
             tournament.rounds.append(round_)
 
