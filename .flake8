@@ -3,4 +3,4 @@ format = html
 htmldir = flake-report
 tee = True
 max-line-length = 119
-exclude=patterns = env, readme.md
+exclude = env
