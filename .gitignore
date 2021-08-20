@@ -2,3 +2,5 @@
 tests.py
 # ignore virtual environment env
 /env
+# ignore flake8
+/flake-report
