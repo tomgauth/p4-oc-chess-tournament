@@ -1,7 +1,7 @@
 # This is the match model
+from models.player_model import Player
 from tinydb import TinyDB
 db = TinyDB('db.json')
-from models.player_model import Player
 
 
 class Match:
@@ -81,10 +81,3 @@ class Match:
 
     def delete_match(self, id_num):
         return self.m_table.remove(doc_ids=[id_num])
-
-
-"""
-Un match unique doit être stocké sous la forme d'un tuple contenant deux listes,
-chacune contenant deux éléments : une référence à une instance de joueur et un score.
-Les matches multiples doivent être stockés sous forme de liste sur l'instance du tour.
-"""

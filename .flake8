@@ -1,0 +1,5 @@
+[flake8]
+format = html
+htmldir = flake-report
+tee = True
+max-line-length = 119

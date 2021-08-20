@@ -30,4 +30,3 @@ class MainMenuController:
             self.select(selection)
             if selection == 4:
                 break
-

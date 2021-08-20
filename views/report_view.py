@@ -19,14 +19,14 @@ Ranking: {}
 """.format(round_.name, round_.date_time_start, round_.date_time_end))
 
     def show_match(self, match, players):
-            p1 = players[0]
-            p2 = players[0]
-            print("""
+        p1 = players[0]
+        p2 = players[0]
+        print("""
 {} {} vs {} {}
 Score:      {} - {}
 -----------------------""".format(
-                p1.first_name, p1.last_name, p2.first_name, p2.last_name,
-                match.p1_score, match.p2_score))
+            p1.first_name, p1.last_name, p2.first_name, p2.last_name,
+            match.p1_score, match.p2_score))
 
     def display_actions(self):
         print('''

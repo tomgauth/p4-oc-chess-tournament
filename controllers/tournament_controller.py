@@ -1,9 +1,5 @@
 # This is the tournament controller
 from models.tournament_model import Tournament
-from models.player_model import Player
-from models.round_model import Round
-from models.match_model import Match
-from controllers.main_menu_controller import MainMenuController
 
 
 class TournamentController:
@@ -229,4 +225,3 @@ class TournamentController:
             self.select(selection)
             if selection == 5:
                 break
-

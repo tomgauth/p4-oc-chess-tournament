@@ -24,7 +24,7 @@ def main():
     t_controller = TournamentController(t_model, player_model, t_view)
     p_controller = PlayerController(player_model, p_view)
     report_controller = ReportController(player_model, t_model, t_controller,
-                                     report_view)
+                                         report_view)
     main_menu_controller = MainMenuController(
         main_menu_view, t_controller, p_controller, report_controller)
 
