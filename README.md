@@ -73,6 +73,14 @@ You can generate the following reports in the "reports menu":
 7. Show all matches of a tournament
 ```
 
+## Generate a flake8 report
+
+In order to generate a flake8 report, use the following command:
+
+```
+$ flake8 .
+
+```
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
