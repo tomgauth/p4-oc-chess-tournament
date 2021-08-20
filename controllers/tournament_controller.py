@@ -91,7 +91,7 @@ class TournamentController:
         return True
 
     def sort_players_by_ranking(self, players):
-        srtd_players = sorted(players, key=lambda x: x.ranking, reverse=False)
+        srtd_players = sorted(players, key=lambda x: x.ranking, reverse=True)
         return srtd_players
 
     def start_round(self, tournament, round_):
@@ -107,6 +107,7 @@ class TournamentController:
 
             round1 = round_
             round1.start_round()
+            round1.save_round()
             # show round1
             self.view.show_round_details(round1)
 
@@ -115,6 +116,7 @@ class TournamentController:
                 range_=['END'])
 
             round1.finish_round()
+            round1.save_round()
 
             for match in round1.matches:
                 self.view.pick_match_winner(match)
@@ -168,6 +170,7 @@ class TournamentController:
                 i += 1
 
             round_.start_round()
+            round_.save_round()
             self.view.show_round_details(round_)
 
             self.view.sanitised_input(
@@ -175,6 +178,7 @@ class TournamentController:
                 range_=['END'])
 
             round_.finish_round()
+            round_.save_round()
             for match in round_.matches:
                 self.view.pick_match_winner(match)
                 result = self.view.sanitised_input('type 1,2 or 3: ',

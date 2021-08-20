@@ -12,4 +12,5 @@ MAIN MENU
 Select an option:
 1. Tournaments
 2. Players
-3. Quit''')
+3. Reports
+4. Quit''')

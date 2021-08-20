@@ -38,16 +38,14 @@ class Round:
         return self.r_table.update({'id': round_id}, doc_ids=[round_id])[0]
 
     def save_round(self):
-        if self.id == '':
-            result = self.create_round()
-        else:
-            result = self.r_table.update(
-                {"matches": self.matches,
-                 "name": self.name,
-                 "date_time_start": self.date_time_start,
-                 "date_time_end": self.date_time_end,
-                 'id': self.id
-                 }, doc_ids=[self.id])[0]
+        matches = [match.id for match in self.matches]
+        result = self.r_table.update(
+            {"matches": matches,
+             "name": self.name,
+             "date_time_start": self.date_time_start,
+             "date_time_end": self.date_time_end,
+             "id": self.id
+             }, doc_ids=[self.id])[0]
         return result
 
     @staticmethod
@@ -58,6 +56,7 @@ class Round:
         round_.date_time_start = round_data['date_time_start']
         round_.date_time_end = round_data['date_time_end']
         round_.matches = []
+        round_.id = id_num
         for match_id in round_data["matches"]:
             match = Match.get_match_from_id(match_id)
             round_.matches.append(match)
