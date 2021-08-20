@@ -1,3 +1,4 @@
 # Ignore the tests file
 tests.py
-tests.py
+# ignore virtual environment env
+/env
