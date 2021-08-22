@@ -16,7 +16,7 @@ class MasterView:
             if default is not None and ui == '':
                 ui = default
 
-            if type_ is not None:
+            elif type_ is not None:
                 try:
                     ui = type_(ui)
                 except ValueError:
@@ -27,7 +27,7 @@ class MasterView:
             elif min_ is not None and ui < min_:
                 print("Input must be greater than or equal to {0}.".format(
                     min_))
-            if len_max is not None and len(str(ui)) > len_max:
+            elif len_max is not None and len(str(ui)) > len_max:
                 print("Input length must be shorter than or equal to {0}."
                       .format(len_max))
             elif len_min is not None and len(str(ui)) < len_min:
