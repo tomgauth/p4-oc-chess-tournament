@@ -4,3 +4,5 @@ tests.py
 /env
 # ignore flake8
 /flake-report
+# ignore .pyc files
+.pyc

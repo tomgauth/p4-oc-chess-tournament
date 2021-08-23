@@ -22,8 +22,7 @@ class MainMenuController:
             print("Invalid Input")
 
     def run(self):
-        running = True
-        while running:
+        while True:
             self.mm_view.display_actions()
             selection = self.mm_view.sanitised_input(
                 '=>', type_=int, range_=[1, 2, 3, 4])

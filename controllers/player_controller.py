@@ -68,8 +68,7 @@ class PlayerController:
             print("Back to Main Menu")
 
     def run(self):
-        running = True
-        while running:
+        while True:
             self.view.display_actions()
             selection = self.view.sanitised_input("=>", type_=int,
                                                   range_=[1, 2, 3])

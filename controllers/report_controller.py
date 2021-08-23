@@ -58,8 +58,7 @@ class ReportController:
             self.tournament_matches()
 
     def run(self):
-        running = True
-        while running:
+        while True:
             self.report_view.display_actions()
             selection = self.report_view.sanitised_input(
                 "=>", type_=int,
