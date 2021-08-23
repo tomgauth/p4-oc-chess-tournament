@@ -77,7 +77,6 @@ TOURNAMENTS MENU
 Select an action:
 1. Create a tournament
 2. See tournaments
-3. Edit a tournament
-4. Start a tournament
-5. Back to main menu
+3. Start a tournament
+4. Back to main menu
           ''')

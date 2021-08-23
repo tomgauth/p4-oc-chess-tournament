@@ -21,10 +21,16 @@ class ReportController:
 
         self.report_view.show_players(players)
 
+    def list_players_ranking(self):
+        self.list_players(mode='ranking')
+
     def list_players_tournament(self, mode='alpha'):
         selected_tournament = self.t_controller.select_tournament()
         players = selected_tournament.players
         self.list_players(players, mode=mode)
+
+    def list_players_tournament_ranking(self):
+        self.list_players_tournament(mode='ranking')
 
     def all_tournaments(self):
         self.t_controller.show_tournaments()
@@ -42,20 +48,17 @@ class ReportController:
             self.report_view.show_match(match, match_players)
 
     def select(self, selection):
-        if selection == 1:
-            self.list_players()
-        elif selection == 2:
-            self.list_players(mode='ranking')
-        elif selection == 3:
-            self.list_players_tournament()
-        elif selection == 4:
-            self.list_players_tournament(mode='ranking')
-        elif selection == 5:
-            self.all_tournaments()
-        elif selection == 6:
-            self.tournament_rounds()
-        elif selection == 7:
-            self.tournament_matches()
+        switcher = {
+            1: self.list_players,
+            2: self.list_players_ranking,
+            3: self.list_players_tournament,
+            4: self.list_players_tournament_ranking,
+            5: self.all_tournaments,
+            6: self.tournament_rounds,
+            7: self.tournament_matches
+        }
+        func = switcher.get(selection, lambda: "Invalid input")
+        func()
 
     def run(self):
         while True:

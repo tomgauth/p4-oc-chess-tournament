@@ -59,13 +59,17 @@ class PlayerController:
         player = self.find_player(first_name, last_name)
         self.view.show_player(player)
 
+    def back_to_main(self):
+        print("Back to Main Menu")
+
     def select(self, selection):
-        if selection == 1:
-            return self.show_players()
-        elif selection == 2:
-            return self.edit_player()
-        elif selection == 3:
-            print("Back to Main Menu")
+        switcher = {
+            1: self.show_players,
+            2: self.edit_player,
+            3: self.back_to_main
+        }
+        func = switcher.get(selection, lambda: "Invalid input")
+        func()
 
     def run(self):
         while True:

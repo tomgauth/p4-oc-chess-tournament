@@ -204,23 +204,25 @@ class TournamentController:
 
         self.view.show_ranked_players(srtd_players, tournament)
 
+    def back_to_main(self):
+        print("Back to Main Menu")
+
     def select(self, selection):
-        if selection == 1:
-            return self.create_tournament()
-        elif selection == 2:
-            return self.show_tournaments()
-        elif selection == 3:
-            print('edit a tournament')
-        elif selection == 4:
-            return self.start_tournament()
-        elif selection == 5:
-            print("Back to Main Menu")
+        switcher = {
+            1: self.create_tournament,
+            2: self.show_tournaments,
+            3: self.start_tournament,
+            4: self.back_to_main
+        }
+        func = switcher.get(selection, lambda: "Invalid input")
+        func()
 
     def run(self):
         while True:
+            print("running tournament controller")
             self.view.display_actions()
             selection = self.view.sanitised_input("=>", type_=int,
-                                                  range_=[1, 2, 3, 4, 5])
+                                                  range_=[1, 2, 3, 4])
             self.select(selection)
-            if selection == 5:
+            if selection == 4:
                 break

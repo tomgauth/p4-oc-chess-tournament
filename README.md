@@ -84,3 +84,7 @@ $ flake8 .
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
+
+## Author
+Name: Tom Gauthier
+Github: https://github.com/tomgauth

@@ -9,17 +9,18 @@ class MainMenuController:
         self.p_controller = player_controller
         self.report_controller = report_controller
 
+    def goodbye(self):
+        print("Goodbye")
+
     def select(self, selection):
-        if selection == 1:
-            self.t_controller.run()
-        elif selection == 2:
-            self.p_controller.run()
-        elif selection == 3:
-            self.report_controller.run()
-        elif selection == 4:
-            print("Goodbye")
-        else:
-            print("Invalid Input")
+        switcher = {
+            1: self.t_controller.run,
+            2: self.p_controller.run,
+            3: self.report_controller.run,
+            4: self.goodbye
+        }
+        func = switcher.get(selection, lambda: "Invalid input")
+        func()
 
     def run(self):
         while True:
