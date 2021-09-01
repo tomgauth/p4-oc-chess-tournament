@@ -10,6 +10,8 @@ from views.main_menu_view import MainMenuView
 from controllers.main_menu_controller import MainMenuController
 
 
+# comment test
+
 def main():
     # pc = PlayerController(Player, PlayerView)
     # Create TinyDB object
