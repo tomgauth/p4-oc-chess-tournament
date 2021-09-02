@@ -1,6 +1,7 @@
 # This is the player model
 from views.master_view import MasterView
 
+
 class PlayerView(MasterView):
 
     def print_players(self, players):
