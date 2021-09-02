@@ -1,7 +1,8 @@
 # this is the report controller
+from controllers.master_controller import MasterController
 
 
-class ReportController:
+class ReportController(MasterController):
     def __init__(self, player_model, tournament_model, tournament_controller,
                  report_view):
         self.p_model = player_model

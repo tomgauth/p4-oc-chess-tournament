@@ -1,11 +1,5 @@
-# A View should never call its own methods. Only a Controller should do it.
-from views.master_view import MasterView
 
-
-class TournamentView(MasterView):
-
-    def get_input(self, prompt=None):
-        self.sanitised_input(prompt)
+class TournamentView():
 
     def print_tournaments(self, tournaments):
         print("""
@@ -68,6 +62,9 @@ Score:      {} - {}
             p.score = p.current_score(tournament)
             print("""{} - [{}] {} {} """.format(
                 position, p.score, p.first_name, p.last_name))
+
+    def back_to_main(self):
+        print("Back to Main Menu")
 
     def display_actions(self):
         print('''

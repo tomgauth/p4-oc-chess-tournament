@@ -1,8 +1,7 @@
 # This is the main menu view
-from views.master_view import MasterView
 
 
-class MainMenuView(MasterView):
+class MainMenuView():
 
     def display_actions(self):
         print('''
@@ -14,3 +13,6 @@ Select an option:
 2. Players
 3. Reports
 4. Quit''')
+
+    def goodbye(self):
+        print("Goodbye !")

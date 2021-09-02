@@ -2,7 +2,7 @@
 from views.master_view import MasterView
 
 
-class ReportView(MasterView):
+class ReportView():
 
     def show_players(self, players):
         for player in players:

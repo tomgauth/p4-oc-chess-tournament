@@ -1,8 +1,9 @@
 # This is the tournament controller
 from models.tournament_model import Tournament
+from controllers.master_controller import MasterController
 
 
-class TournamentController:
+class TournamentController(MasterController):
 
     def __init__(self, tournament_model, player_model, view):
         self.t_model = tournament_model
@@ -14,8 +15,8 @@ class TournamentController:
         tournaments_ids = []
         for tournament in all_tournaments:
             tournaments_ids.append(tournament.id)
-        selection = self.view.sanitised_input('=> ', type_=int,
-                                              range_=tournaments_ids)
+        selection = self.sanitised_input('=> ', type_=int,
+                                         range_=tournaments_ids)
         tournament = Tournament()
         selected_tournament = tournament.get_tournament_from_id(selection)
         if show:
@@ -23,7 +24,6 @@ class TournamentController:
         return selected_tournament
 
     def show_tournaments(self):
-        # do something
         all_tournaments = self.t_model.read_tournaments()
         self.view.print_tournaments(all_tournaments)
         return all_tournaments
@@ -40,7 +40,7 @@ class TournamentController:
 
     def add_player(self):
         p = self.p_model
-        view = self.view.sanitised_input
+        view = self.sanitised_input
         p.first_name = view('player first name: ', type_=str.capitalize,
                             len_min=2)
         p.last_name = view('player last name: ', type_=str.capitalize,
@@ -64,21 +64,22 @@ class TournamentController:
 
     def create_tournament(self):
         t = self.t_model
-        view = self.view.sanitised_input
-        t.name = view('name: ', type_=str, len_min=2)
-        t.location = view('location: ', type_=str)
-        t.num_of_rounds = view('number of rounds (4 by default): ', type_=int,
-                               min_=1,
-                               default=4)
-        t.date_start = view('date start (ddmmyyyy) ', type_=str, len_min=8,
+        input_ = self.sanitised_input
+        t.name = input_('name: ', type_=str, len_min=2)
+        t.location = input_('location: ', type_=str)
+        t.num_of_rounds = input_('number of rounds (4 by default): ',
+                                 type_=int,
+                                 min_=1,
+                                 default=4)
+        t.date_start = input_('date start (ddmmyyyy) ', type_=str, len_min=8,
+                              len_max=8)
+        t.date_end = input_('date end (ddmmyyyy) (default = date start) ',
+                            type_=str, len_min=8, default=t.date_start,
                             len_max=8)
-        t.date_end = view('date end (ddmmyyyy) (default same as date start) ',
-                          type_=str, len_min=8, default=t.date_start,
-                          len_max=8)
-        t.time_control = view('time_control: (bullet, blitz or rapid) ',
-                              type_=str.lower,
-                              range_=['bullet', 'blitz', 'rapid'])
-        t.description = view('description: ', type_=str)
+        t.time_control = input_('time_control: (bullet, blitz or rapid) ',
+                                type_=str.lower,
+                                range_=['bullet', 'blitz', 'rapid'])
+        t.description = input_('description: ', type_=str)
         added_players = self.add_players()
         t.players = added_players
         tournament_id = t.save_tournament()
@@ -107,7 +108,7 @@ class TournamentController:
             # show round1
             self.view.show_round_details(round1)
 
-            self.view.sanitised_input(
+            self.sanitised_input(
                 'type "END" to close the round: ', type_=str.upper,
                 range_=['END'])
 
@@ -116,9 +117,9 @@ class TournamentController:
 
             for match in round1.matches:
                 self.view.pick_match_winner(match)
-                result = self.view.sanitised_input("type 1,2 or 3: ",
-                                                   type_=int,
-                                                   range_=[1, 2, 3])
+                result = self.sanitised_input("type 1,2 or 3: ",
+                                              type_=int,
+                                              range_=[1, 2, 3])
                 if result == 1:
                     match.p1_won()
                 if result == 2:
@@ -130,7 +131,7 @@ class TournamentController:
             self.view.show_round_details(round1)
         else:
 
-            self.view.sanitised_input(
+            self.sanitised_input(
                 'type "START" to start {}: '.format(round_.name),
                 type_=str.upper, range_=['START'])
 
@@ -169,7 +170,7 @@ class TournamentController:
             round_.save_round()
             self.view.show_round_details(round_)
 
-            self.view.sanitised_input(
+            self.sanitised_input(
                 'type "END" to close the round: ', type_=str.upper,
                 range_=['END'])
 
@@ -177,9 +178,9 @@ class TournamentController:
             round_.save_round()
             for match in round_.matches:
                 self.view.pick_match_winner(match)
-                result = self.view.sanitised_input('type 1,2 or 3: ',
-                                                   type_=int,
-                                                   range_=[1, 2, 3])
+                result = self.sanitised_input('type 1,2 or 3: ',
+                                              type_=int,
+                                              range_=[1, 2, 3])
                 if result == 1:
                     match.p1_won()
                 if result == 2:
@@ -204,25 +205,21 @@ class TournamentController:
 
         self.view.show_ranked_players(srtd_players, tournament)
 
-    def back_to_main(self):
-        print("Back to Main Menu")
-
     def select(self, selection):
         switcher = {
             1: self.create_tournament,
             2: self.show_tournaments,
             3: self.start_tournament,
-            4: self.back_to_main
+            4: self.view.back_to_main
         }
         func = switcher.get(selection, lambda: "Invalid input")
         func()
 
     def run(self):
         while True:
-            print("running tournament controller")
             self.view.display_actions()
-            selection = self.view.sanitised_input("=>", type_=int,
-                                                  range_=[1, 2, 3, 4])
+            selection = self.sanitised_input("=>", type_=int,
+                                             range_=[1, 2, 3, 4])
             self.select(selection)
             if selection == 4:
                 break
