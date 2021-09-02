@@ -1,5 +1,4 @@
 # this is the report view
-from views.master_view import MasterView
 
 
 class ReportView():
