@@ -75,7 +75,7 @@ class PlayerController(MasterController):
     def run(self):
         while True:
             self.view.display_actions()
-            selection = self.sanitised_input("=>", type_=int,
+            selection = self.sanitised_input(type_=int,
                                              range_=[1, 2, 3])
             self.select(selection)
             if selection == 3:

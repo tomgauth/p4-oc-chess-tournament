@@ -1,7 +1,7 @@
 # This is the player model
+from views.master_view import MasterView
 
-
-class PlayerView():
+class PlayerView(MasterView):
 
     def print_players(self, players):
         for player in players:
@@ -18,9 +18,6 @@ Sex: {}
           """.format(
             player.id, player.first_name, player.last_name, player.ranking,
             player.birth_date, player.sex))
-
-    def custom_message(self, message):
-        print(message)
 
     def display_actions(self):
         print('''

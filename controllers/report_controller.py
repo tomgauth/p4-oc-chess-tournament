@@ -65,7 +65,7 @@ class ReportController(MasterController):
         while True:
             self.report_view.display_actions()
             selection = self.sanitised_input(
-                "=>", type_=int,
+                type_=int,
                 range_=[1, 2, 3, 4, 5, 6, 7, 8])
             self.select(selection)
             if selection == 8:
